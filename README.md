@@ -4,6 +4,8 @@
 
 >现在仅仅是测试
 
+>***[beta版主页](https://bilisugherbili.github.io/beta/)***
+
 >[sugher的论坛](https://yuhaoxuan666.github.io/)
 
 ```markdown
