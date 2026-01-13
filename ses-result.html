@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>自尊量表（SES）测试结果 - 金织网</title>
+    <!-- 复用CDN和样式变量 -->
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/fontawesome.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/solid.min.css">
+    <style>
+        /* 全局变量与基础样式（复用） */
+        :root {
+            --primary-color: #D4AF37; 
+            --primary-dark: #B8860B; 
+            --primary-light: #F9F2D6; 
+            --text-dark: #2D2926; 
+            --text-gray: #5C554E; 
+            --bg-light: #FFFAF0; 
+            --bg-white: #FFFFFF; 
+            --border-gray: #E8E0D0; 
+            --shadow-sm: 0 2px 8px rgba(212, 175, 55, 0.15); 
+            --radius-md: 8px;
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Inter", "PingFang SC", "Microsoft YaHei", sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-light);
+            color: var(--text-dark);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* 导航样式（复用） */
+        header {
+            background-color: var(--bg-white);
+            box-shadow: var(--shadow-sm);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 70px;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+
+        .nav-links ul {
+            list-style: none;
+            display: flex;
+            gap: 30px;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text-gray);
+            font-weight: 500;
+            transition: var(--transition);
+        }
+
+        .nav-links a:hover {
+            color: var(--primary-color);
+        }
+
+        .mobile-menu {
+            display: none;
+            font-size: 24px;
+            color: var(--primary-color);
+            cursor: pointer;
+            border: none;
+            background: transparent;
+        }
+
+        /* 结果页专属样式 */
+        .result-header {
+            padding: 40px 0;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .result-header h1 {
+            font-size: 32px;
+            color: var(--primary-dark);
+            margin-bottom: 15px;
+        }
+
+        .result-header p {
+            font-size: 16px;
+            color: var(--text-gray);
+        }
+
+        /* 结果概览卡片 */
+        .result-card {
+            background-color: var(--bg-white);
+            padding: 30px;
+            border-radius: var(--radius-md);
+            box-shadow: var(--shadow-sm);
+            margin-bottom: 40px;
+            text-align: center;
+            border-top: 6px solid var(--primary-color);
+        }
+
+        .score-display {
+            font-size: 48px;
+            font-weight: 700;
+            color: var(--primary-dark);
+            margin-bottom: 10px;
+        }
+
+        .level-display {
+            font-size: 20px;
+            font-weight: 500;
+            color: #28a745; /* 默认绿色（高自尊），后续通过JS动态修改 */
+            margin-bottom: 20px;
+        }
+
+        .score-desc {
+            font-size: 14px;
+            color: var(--text-gray);
+            margin-bottom: 10px;
+        }
+
+        /* 详细解读卡片 */
+        .interpretation-card {
+            background-color: var(--bg-white);
+            padding: 30px;
+            border-radius: var(--radius-md);
+            box-shadow: var(--shadow-sm);
+            margin-bottom: 40px;
+        }
+
+        .interpretation-card h2 {
+            font-size: 20px;
+            color: var(--primary-dark);
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .interpretation-content {
+            font-size: 16px;
+            color: var(--text-gray);
+            line-height: 1.8;
+            margin-bottom: 20px;
+        }
+
+        .interpretation-content p {
+            margin-bottom: 15px;
+        }
+
+        /* 建议卡片 */
+        .suggestion-card {
+            background-color: var(--primary-light);
+            padding: 25px;
+            border-radius: var(--radius-md);
+            box-shadow: var(--shadow-sm);
+            margin-bottom: 40px;
+            border-left: 4px solid var(--primary-color);
+        }
+
+        .suggestion-card h2 {
+            font-size: 18px;
+            color: var(--primary-dark);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .suggestion-list {
+            font-size: 15px;
+            color: var(--text-dark);
+            line-height: 1.8;
+            padding-left: 20px;
+        }
+
+        .suggestion-list li {
+            margin-bottom: 10px;
+        }
+
+        /* 操作按钮区域 */
+        .action-buttons {
+            text-align: center;
+            padding: 20px 0 60px;
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .action-btn {
+            padding: 12px 30px;
+            border-radius: var(--radius-md);
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .btn-primary:hover {
+            background-color: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+
+        .btn-outline {
+            background-color: transparent;
+            color: var(--primary-color);
+            border: 1px solid var(--primary-color);
+        }
+
+        .btn-outline:hover {
+            background-color: var(--primary-light);
+        }
+
+        /* 隐私提示 */
+        .privacy-tip {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: var(--radius-md);
+            font-size: 14px;
+            color: var(--text-gray);
+            margin-bottom: 40px;
+            text-align: center;
+            border: 1px solid var(--border-gray);
+        }
+
+        /* 页脚 */
+        footer {
+            background-color: var(--text-dark);
+            color: var(--primary-light);
+            padding: 30px 0 20px;
+            text-align: center;
+            border-top: 3px solid var(--primary-color);
+            font-size: 12px;
+        }
+
+        /* 响应式适配 */
+        @media (max-width: 768px) {
+            .nav-links ul {
+                display: none;
+            }
+
+            .mobile-menu {
+                display: block;
+            }
+
+            .result-header h1 {
+                font-size: 26px;
+            }
+
+            .score-display {
+                font-size: 36px;
+            }
+
+            .interpretation-card, .suggestion-card {
+                padding: 20px;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .action-btn {
+                width: 100%;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .header-content {
+                height: 60px;
+            }
+
+            .logo {
+                font-size: 20px;
+            }
+
+            .result-header {
+                padding: 30px 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 导航栏 -->
+    <header>
+        <div class="header-content">
+            <div class="logo">
+                <i class="fas fa-star" aria-label="金织网logo"></i>
+                金织网
+            </div>
+            <nav class="nav-links">
+                <ul>
+                    <li><a href="index.html">首页</a></li>
+                    <li><a href="index.html#scales">量表测试</a></li>
+                    <li><a href="about.html">关于我们</a></li>
+                    <li><a href="help.html">帮助中心</a></li>
+                </ul>
+            </nav>
+            <button class="mobile-menu" aria-label="打开移动端导航菜单">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+    </header>
+
+    <!-- 结果页头部 -->
+    <div class="result-header">
+        <div class="container">
+            <h1>自尊量表（SES）测试结果</h1>
+            <p>以下结果基于你的作答生成，仅作个人心理状态参考</p>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- 结果概览 -->
+        <div class="result-card" id="resultCard">
+            <div class="score-display" id="totalScore">--</div>
+            <div class="level-display" id="selfEsteemLevel">--</div>
+            <div class="score-desc">总分范围：10-40分，分数越高表示自尊水平越高</div>
+        </div>
+
+        <!-- 隐私提示 -->
+        <div class="privacy-tip">
+            <i class="fas fa-shield-alt" style="color: var(--primary-color); margin-right: 8px;"></i>
+            提示：平台未存储你的测试数据，关闭此页面后将无法查看结果，建议你截图保存
+        </div>
+
+        <!-- 详细解读 -->
+        <div class="interpretation-card">
+            <h2><i class="fas fa-chart-line" style="color: var(--primary-color);"></i> 结果解读</h2>
+            <div class="interpretation-content" id="interpretationContent">
+                <!-- 解读内容通过JS动态生成 -->
+            </div>
+        </div>
+
+        <!-- 建议卡片 -->
+        <div class="suggestion-card">
+            <h2><i class="fas fa-lightbulb" style="color: var(--primary-color);"></i> 通用建议</h2>
+            <ul class="suggestion-list" id="suggestionList">
+                <!-- 建议内容通过JS动态生成 -->
+            </ul>
+        </div>
+
+        <!-- 操作按钮 -->
+        <div class="action-buttons">
+            <a href="ses-test.html" class="action-btn btn-outline">重新测试</a>
+            <a href="index.html" class="action-btn btn-primary">返回首页</a>
+        </div>
+    </div>
+
+    <!-- 页脚 -->
+    <footer>
+        <div class="container">
+            <p>© <script>document.write(new Date().getFullYear())</script> 金织网 公益心理平台 | 测试结果仅作参考，不构成专业心理诊断</p>
+            <p style="margin-top: 8px;">若你感到心理不适，建议及时联系专业心理咨询师或精神科医生</p>
+        </div>
+    </footer>
+
+    <script>
+        // 1. 移动端菜单交互
+        const mobileMenu = document.querySelector('.mobile-menu');
+        const navUl = document.querySelector('.nav-links ul');
+        mobileMenu.addEventListener('click', () => {
+            navUl.style.display = navUl.style.display === 'flex' ? 'none' : 'flex';
+            if (navUl.style.display === 'flex') {
+                navUl.style.flexDirection = 'column';
+                navUl.style.position = 'absolute';
+                navUl.style.top = '70px';
+                navUl.style.left = '0';
+                navUl.style.right = '0';
+                navUl.style.background = 'white';
+                navUl.style.padding = '20px';
+                navUl.style.boxShadow = '0 4px 8px rgba(0,0,0,0.1)';
+                mobileMenu.innerHTML = '<i class="fas fa-times"></i>';
+            } else {
+                mobileMenu.innerHTML = '<i class="fas fa-bars"></i>';
+            }
+        });
+
+        // 2. 解析URL参数中的总分，生成结果
+        function getQueryParam(param) {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get(param);
+        }
+
+        // 初始化结果页
+        function initResultPage() {
+            // 获取总分
+            const score = parseInt(getQueryParam('score'));
+            const scoreEl = document.getElementById('totalScore');
+            const levelEl = document.getElementById('selfEsteemLevel');
+            const interpretationEl = document.getElementById('interpretationContent');
+            const suggestionEl = document.getElementById('suggestionList');
+
+            // 验证分数有效性
+            if (isNaN(score) || score < 10 || score > 40) {
+                scoreEl.textContent = '无效分数';
+                levelEl.textContent = '测试数据异常';
+                levelEl.style.color = '#dc3545';
+                interpretationEl.innerHTML = '<p>无法获取有效的测试分数，请重新完成测试。</p>';
+                suggestionEl.innerHTML = '<li>请返回测试页，重新认真作答所有题目。</li>';
+                return;
+            }
+
+            // 显示总分
+            scoreEl.textContent = score;
+
+            // 判定自尊水平并生成解读和建议
+            let level, levelColor, interpretation, suggestions;
+            if (score >= 30) {
+                // 高自尊
+                level = '高自尊水平';
+                levelColor = '#28a745';
+                interpretation = `
+                    <p>你的自尊水平处于较高区间，说明你对自己有清晰的自我认知，能够肯定自身的价值和能力，对自己的评价较为积极。</p>
+                    <p>高自尊的人通常更自信，面对挫折和批评时能保持稳定的自我认知，不易因外界评价否定自己，也更愿意尝试新事物、接受挑战。</p>
+                    <p>需要注意的是，高自尊不等于“自负”，健康的高自尊是建立在客观自我认知基础上的，而非盲目自大。</p>
+                `;
+                suggestions = `
+                    <li>继续保持积极的自我认知，同时保持开放的心态，倾听他人的合理建议；</li>
+                    <li>利用自身的自信优势，尝试更多有意义的目标，发挥自身潜力；</li>
+                    <li>关注他人的感受，高自尊的你可以成为身边人的积极榜样，但避免忽视他人的需求。</li>
+                `;
+            } else if (score >= 20 && score < 30) {
+                // 中等自尊
+                level = '中等自尊水平';
+                levelColor = '#ffc107';
+                interpretation = `
+                    <p>你的自尊水平处于中等区间，这是大多数人的常态：你对自己有基本的肯定，但在某些场景下可能会怀疑自己的价值或能力。</p>
+                    <p>中等自尊的人能够客观看待自己的优点和不足，既不会过度自我否定，也不会盲目自我肯定，面对压力时可能会出现短暂的自我怀疑，但整体能保持稳定。</p>
+                    <p>这种状态是可优化的，通过有意识的自我接纳和正向反馈，可逐步提升自尊水平。</p>
+                `;
+                suggestions = `
+                    <li>学会关注自己的优点和成就，即使是小事也值得肯定，比如完成一项工作、帮助他人等；</li>
+                    <li>减少与他人的过度比较，每个人都有自己的成长节奏，专注于自身的进步更重要；</li>
+                    <li>面对批评时，区分“事情本身”和“自我价值”，犯错不等于“我不行”。</li>
+                `;
+            } else {
+                // 低自尊
+                level = '低自尊水平';
+                levelColor = '#dc3545';
+                interpretation = `
+                    <p>你的自尊水平处于较低区间，说明你可能经常否定自己的价值，对自己的能力缺乏信心，容易受他人评价影响，甚至过度关注自己的缺点。</p>
+                    <p>低自尊可能表现为：害怕尝试新事物、过度在意他人看法、遇到挫折时容易自我否定、难以接受表扬等。但这**不代表**你没有价值，只是暂时的自我认知偏差。</p>
+                    <p>自尊水平是可以通过有意识的调整逐步提升的，这需要你重新认识自己的价值，学会自我接纳。</p>
+                `;
+                suggestions = `
+                    <li>从小事开始积累成就感：设定容易完成的小目标，完成后及时肯定自己；</li>
+                    <li>停止自我否定的想法，当出现“我不行”的念头时，尝试换成“我可以试试”；</li>
+                    <li>远离过度否定你的人，多和接纳、鼓励你的人相处；</li>
+                    <li>若长期感到自我否定、情绪低落，建议寻求专业心理咨询师的帮助。</li>
+                `;
+            }
+
+            // 渲染内容
+            levelEl.textContent = level;
+            levelEl.style.color = levelColor;
+            interpretationEl.innerHTML = interpretation;
+            suggestionEl.innerHTML = suggestions;
+        }
+
+        // 页面加载时初始化结果
+        window.onload = initResultPage;
+    </script>
+</body>
+</html>

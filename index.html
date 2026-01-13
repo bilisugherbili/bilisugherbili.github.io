@@ -1,0 +1,946 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>金织网 - 公益心理量表测试平台</title>
+    
+    <!-- SEO 和元数据优化 -->
+    <meta name="description" content="金织网 - 公益心理量表测试平台，提供专业的抑郁、焦虑、人格等心理量表测试，免费为您的心理健康保驾护航。">
+    <meta name="keywords" content="心理测试,量表,SDS,SAS,SCL-90,心理健康,公益,金织网">
+    <meta name="author" content="金织网">
+    <meta name="robots" content="index, follow">
+    
+    <!-- Open Graph 标签 -->
+    <meta property="og:title" content="金织网 - 公益心理量表测试平台">
+    <meta property="og:description" content="免费、专业、便捷的心理评估工具">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://goldenweb.org">
+    <meta property="og:image" content="https://goldenweb.org/images/og-image.jpg">
+    
+    <!-- 预连接优化 -->
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    
+    <!-- 图标 -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22 fill=%22%23D4AF37%22>🌟</text></svg>">
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+    
+    <style>
+        /* 
+         * 金织网 - 主样式文件
+         * 版本: 2.0.0
+         * 最后更新: 2026-01
+         */
+        
+        /* 全局样式重置和性能优化 */
+        *, *::before, *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        /* 变量定义 - 阿格莱亚金色系风格 */
+        :root {
+            --primary-color: #D4AF37; /* 主色调：黄金色 */
+            --primary-dark: #B8860B; /* 深金色 */
+            --primary-light: #F9F2D6; /* 浅金/米金色 */
+            --secondary-color: #8B7355; /* 辅助色：浅棕木色 */
+            --text-dark: #2D2926; /* 深棕文字 */
+            --text-gray: #5C554E; /* 浅棕文字 */
+            --text-light: #8A817C; /* 淡棕文字 */
+            --bg-light: #FFFAF0; /* 奶油白背景 */
+            --bg-white: #FFFFFF; /* 纯白 */
+            --border-gray: #E8E0D0; /* 浅金边框 */
+            --shadow-sm: 0 2px 8px rgba(212, 175, 55, 0.15); /* 金色阴影 */
+            --shadow-md: 0 4px 12px rgba(212, 175, 55, 0.25);
+            --shadow-lg: 0 8px 24px rgba(212, 175, 55, 0.3);
+            --radius-sm: 6px;
+            --radius-md: 8px;
+            --radius-lg: 12px;
+            --transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        body {
+            background-color: var(--bg-light);
+            color: var(--text-dark);
+            line-height: 1.6;
+            font-family: "Inter", "PingFang SC", "Microsoft YaHei", sans-serif;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* 焦点可见性 */
+        :focus {
+            outline: 2px solid var(--primary-color);
+            outline-offset: 2px;
+        }
+
+        :focus:not(:focus-visible) {
+            outline: none;
+        }
+
+        /* 容器样式 */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            width: 100%;
+        }
+
+        /* 粘性导航栏 */
+        header {
+            background-color: var(--bg-white);
+            box-shadow: var(--shadow-sm);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            transition: var(--transition);
+            will-change: transform, box-shadow;
+        }
+
+        header.scrolled {
+            box-shadow: var(--shadow-md);
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 70px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--primary-color);
+            text-decoration: none;
+            transition: var(--transition);
+        }
+
+        .logo:hover {
+            transform: scale(1.05);
+        }
+
+        .logo span {
+            color: var(--primary-dark);
+        }
+
+        /* 主导航 */
+        .nav-links {
+            display: flex;
+            gap: 30px;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text-gray);
+            font-weight: 500;
+            transition: var(--transition);
+            padding: 8px 12px;
+            border-radius: var(--radius-sm);
+            position: relative;
+        }
+
+        .nav-links a:hover,
+        .nav-links a:focus {
+            color: var(--primary-color);
+            background-color: var(--primary-light);
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 50%;
+            width: 0;
+            height: 2px;
+            background-color: var(--primary-color);
+            transition: var(--transition);
+            transform: translateX(-50%);
+        }
+
+        .nav-links a:hover::after,
+        .nav-links a:focus::after {
+            width: 80%;
+        }
+
+        .mobile-menu {
+            display: none;
+            font-size: 24px;
+            color: var(--primary-color);
+            cursor: pointer;
+            background: none;
+            border: none;
+            padding: 8px;
+            border-radius: var(--radius-sm);
+            transition: var(--transition);
+        }
+
+        .mobile-menu:hover {
+            background-color: var(--primary-light);
+        }
+
+        /* 英雄区域 */
+        .hero {
+            padding: 80px 0;
+            text-align: center;
+            background: linear-gradient(135deg, #FFF9E8 0%, #F9F2D6 100%);
+            margin-bottom: 60px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='%23D4AF37' fill-opacity='0.05' fill-rule='evenodd'/%3E%3C/svg%3E");
+            opacity: 0.3;
+            z-index: 0;
+        }
+
+        .hero > .container {
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero h1 {
+            font-size: 42px;
+            margin-bottom: 20px;
+            color: var(--text-dark);
+            text-shadow: 0 1px 2px rgba(212, 175, 55, 0.2);
+            line-height: 1.2;
+        }
+
+        .hero h1 span {
+            color: var(--primary-color);
+        }
+
+        .hero p {
+            font-size: 18px;
+            color: var(--text-gray);
+            max-width: 800px;
+            margin: 0 auto 30px;
+            line-height: 1.8;
+        }
+
+        /* 按钮样式 */
+        .btn {
+            display: inline-block;
+            padding: 12px 30px;
+            background-color: var(--primary-color);
+            color: white;
+            text-decoration: none;
+            border-radius: var(--radius-md);
+            font-weight: 600;
+            transition: var(--transition);
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--primary-dark);
+            cursor: pointer;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            will-change: transform;
+        }
+
+        .btn:hover {
+            background-color: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+
+        /* 加载状态 */
+        .btn.loading {
+            color: transparent;
+        }
+
+        .btn.loading::after {
+            content: "";
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 20px;
+            height: 20px;
+            margin: -10px 0 0 -10px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* 量表区域 */
+        .scales-section {
+            padding: 40px 0 80px;
+        }
+
+        .section-title {
+            text-align: center;
+            margin-bottom: 60px;
+            font-size: 32px;
+            color: var(--text-dark);
+            position: relative;
+            text-shadow: 0 1px 2px rgba(212, 175, 55, 0.1);
+        }
+
+        .section-title::after {
+            content: "";
+            display: block;
+            width: 80px;
+            height: 4px;
+            background-color: var(--primary-color);
+            margin: 15px auto 0;
+            border-radius: 2px;
+        }
+
+        .scales-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 30px;
+        }
+
+        /* 量表卡片 */
+        .scale-card {
+            background-color: var(--bg-white);
+            border-radius: var(--radius-md);
+            box-shadow: var(--shadow-sm);
+            padding: 30px;
+            transition: var(--transition);
+            cursor: pointer;
+            border-top: 4px solid transparent;
+            border: 1px solid var(--border-gray);
+            position: relative;
+            overflow: hidden;
+            will-change: transform;
+        }
+
+        .scale-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-md);
+            border-top-color: var(--primary-color);
+            background-color: var(--primary-light);
+        }
+
+        .scale-card h3 {
+            font-size: 20px;
+            margin-bottom: 15px;
+            color: var(--primary-dark);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .scale-card h3 i {
+            font-size: 22px;
+            color: var(--primary-color);
+        }
+
+        .scale-card .desc {
+            color: var(--text-gray);
+            font-size: 14px;
+            margin-bottom: 20px;
+            line-height: 1.7;
+        }
+
+        .scale-card .btn {
+            display: inline-block;
+            padding: 8px 20px;
+            border: 1px solid var(--primary-color);
+            color: var(--primary-color);
+            text-decoration: none;
+            border-radius: var(--radius-sm);
+            font-size: 14px;
+            font-weight: 500;
+            transition: var(--transition);
+            background-color: transparent;
+        }
+
+        .scale-card .btn:hover {
+            background-color: var(--primary-color);
+            color: white;
+            border-color: var(--primary-dark);
+        }
+
+        /* 页脚 */
+        footer {
+            background-color: var(--text-dark);
+            color: var(--primary-light);
+            padding: 40px 0 20px;
+            text-align: center;
+            border-top: 3px solid var(--primary-color);
+        }
+
+        .footer-content {
+            margin-bottom: 30px;
+        }
+
+        .footer-content h3 {
+            color: var(--primary-color);
+            margin-bottom: 15px;
+            font-size: 20px;
+        }
+
+        .footer-content p {
+            color: var(--text-light);
+            max-width: 800px;
+            margin: 0 auto;
+            font-size: 14px;
+            line-height: 1.8;
+        }
+
+        .copyright {
+            font-size: 12px;
+            color: var(--text-light);
+            padding-top: 20px;
+            border-top: 1px solid #444;
+        }
+
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+                position: absolute;
+                top: 70px;
+                left: 0;
+                right: 0;
+                background-color: var(--bg-white);
+                flex-direction: column;
+                padding: 20px;
+                box-shadow: var(--shadow-md);
+                z-index: 999;
+            }
+
+            .nav-links.active {
+                display: flex;
+            }
+
+            .mobile-menu {
+                display: block;
+            }
+
+            .hero {
+                padding: 60px 0;
+            }
+
+            .hero h1 {
+                font-size: 32px;
+            }
+
+            .hero p {
+                font-size: 16px;
+                padding: 0 10px;
+            }
+
+            .section-title {
+                font-size: 26px;
+                margin-bottom: 40px;
+            }
+
+            .scales-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+
+            .scale-card {
+                padding: 25px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .header-content {
+                height: 60px;
+            }
+
+            .logo {
+                font-size: 20px;
+            }
+
+            .hero h1 {
+                font-size: 28px;
+            }
+
+            .hero .btn {
+                padding: 10px 24px;
+                font-size: 14px;
+            }
+
+            .scales-section {
+                padding: 20px 0 60px;
+            }
+            
+            .scale-card {
+                padding: 20px;
+            }
+        }
+
+        /* 超宽屏幕适配 */
+        @media (min-width: 1600px) {
+            .container {
+                max-width: 1400px;
+            }
+        }
+
+        /* 折叠屏设备适配 */
+        @media (max-height: 600px) and (orientation: landscape) {
+            .hero {
+                padding: 40px 0;
+            }
+        }
+
+        /* 打印样式 */
+        @media print {
+            header, 
+            .mobile-menu,
+            .hero .btn,
+            .scale-card .btn,
+            footer {
+                display: none !important;
+            }
+            
+            body {
+                background: white !important;
+                color: black !important;
+            }
+            
+            .scale-card {
+                break-inside: avoid;
+                box-shadow: none !important;
+                border: 1px solid #ddd !important;
+                margin-bottom: 20px;
+            }
+            
+            .container {
+                max-width: 100% !important;
+                padding: 0 !important;
+            }
+            
+            .hero {
+                background: none !important;
+                margin-bottom: 30px !important;
+            }
+        }
+
+        /* 加载动画 */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .scale-card {
+            animation: fadeIn 0.6s ease-out forwards;
+        }
+
+        .scale-card:nth-child(2) { animation-delay: 0.1s; }
+        .scale-card:nth-child(3) { animation-delay: 0.2s; }
+        .scale-card:nth-child(4) { animation-delay: 0.3s; }
+        .scale-card:nth-child(5) { animation-delay: 0.4s; }
+        .scale-card:nth-child(6) { animation-delay: 0.5s; }
+        .scale-card:nth-child(7) { animation-delay: 0.6s; }
+        .scale-card:nth-child(8) { animation-delay: 0.7s; }
+
+        /* 高对比度模式支持 */
+        @media (prefers-contrast: high) {
+            :root {
+                --primary-color: #000000;
+                --text-dark: #000000;
+                --bg-light: #ffffff;
+                --border-gray: #000000;
+            }
+            
+            .btn {
+                border-width: 2px;
+            }
+        }
+    </style>
+    
+    <!-- 引入图标库 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" 
+          integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" 
+          crossorigin="anonymous" referrerpolicy="no-referrer" />
+</head>
+<body>
+    <!-- 头部导航 -->
+    <header>
+        <div class="container header-content">
+            <a href="#home" class="logo" aria-label="金织网首页">
+                <i class="fas fa-star" aria-hidden="true"></i>
+                <span>金织网</span>
+            </a>
+            <nav class="nav-links" aria-label="主导航">
+                <a href="#home" aria-current="page">首页</a>
+                <a href="#scales">量表测试</a>
+                <a href="about.html">关于我们</a>
+                <a href="help.html">帮助中心</a>
+            </nav>
+            <button class="mobile-menu" aria-label="菜单" aria-expanded="false">
+                <i class="fas fa-bars" aria-hidden="true"></i>
+            </button>
+        </div>
+    </header>
+
+    <!-- 英雄区（简介） -->
+    <section class="hero" id="home">
+        <div class="container">
+            <h1>金织网<br>用心<span>守护</span>每一份心灵</h1>
+            <p>金织网是与三月树洞项目存在合作关系的公益性质的心理量表测试平台，以温暖的金色守护为理念，致力于为每一位需要的人提供免费、专业、便捷的心理评估工具。我们希望通过科学的量表测试，帮助你更好地了解自己的心理状态，为心理健康保驾护航。所有测试结果仅作参考，如需专业帮助，我们也会为你提供相关的指引。</p>
+            <a href="#scales" class="btn">开始探索</a>
+        </div>
+    </section>
+
+    <!-- 量表选择区域 -->
+    <section class="scales-section" id="scales">
+        <div class="container">
+            <h2 class="section-title">常用心理量表</h2>
+            <div class="scales-grid">
+                <!-- 公告 -->
+                <div class="scale-card">
+                    <h3><i class="fas fa-file-code"></i>重要公告</h3>
+                    <p class="desc">SDS、SAS暂不支持进行图表生成和报表打印！NEO-PI-R、PSS-14和SCL-90功能完善，可进行图表生成、打印等数据分析！本站所有题目来源于常规版心理学检测报表，不代表绝对专业性和唯一性！本网站永久免费！</p>
+                </div>
+                
+                <!-- 抑郁自评量表 -->
+                <div class="scale-card" data-scale="sds">
+                    <h3><i class="fas fa-cloud-sun"></i>抑郁自评量表（SDS）</h3>
+                    <p class="desc">适用于具有抑郁症状的成年人，用于衡量抑郁状态的轻重程度及其在治疗中的变化，共20个条目，操作简单。</p>
+                    <a href="sds.html" class="btn" data-loading="false">开始测评</a>
+                </div>
+
+                <!-- 焦虑自评量表 -->
+                <div class="scale-card" data-scale="sas">
+                    <h3><i class="fas fa-exclamation-triangle"></i>焦虑自评量表（SAS）</h3>
+                    <p class="desc">评估焦虑症状的轻重程度，适用于有焦虑症状的成年人，聚焦焦虑的主观感受，共20个条目，4级评分。</p>
+                    <a href="sas.html" class="btn" data-loading="false">开始测评</a>
+                </div>
+
+                <!-- 症状自评量表 -->
+                <div class="scale-card" data-scale="scl90">
+                    <h3><i class="fas fa-heartbeat"></i>症状自评量表（SCL-90）</h3>
+                    <p class="desc">综合评估个体的心理健康水平，筛查是否存在强迫、人际关系敏感、抑郁、焦虑等9类心理症状，共90个条目。</p>
+                    <a href="scl90.html" class="btn" data-loading="false">开始测评</a>
+                </div>
+
+                <!-- 大五人格量表 -->
+                <div class="scale-card" data-scale="neo">
+                    <h3><i class="fas fa-user"></i>大五人格量表（NEO-PI-R）</h3>
+                    <p class="desc">目前主流的人格测评工具，从开放性、尽责性、外向性、宜人性、神经质5个维度评估人格特征。</p>
+                    <a href="neo.html" class="btn" data-loading="false">开始测评</a>
+                </div>
+
+                <!-- 压力知觉量表 -->
+                <div class="scale-card" data-scale="pss">
+                    <h3><i class="fas fa-weight-hanging"></i>压力知觉量表（PSS-14）</h3>
+                    <p class="desc">测量个体对生活压力的感知程度，而非具体压力事件，包含14个条目，评估压力的失控感、威胁感等维度。</p>
+                    <a href="pss.html" class="btn" data-loading="false">开始测评</a>
+                </div>
+
+                <!-- 自尊量表 -->
+                <div class="scale-card" data-scale="ses">
+                    <h3><i class="fas fa-star"></i>自尊量表（SES）</h3>
+                    <p class="desc">测量个体的自尊水平，共10个条目，4级评分，总分越高表示自尊水平越高，操作简便易理解。</p>
+                    <a href="ses-test.html" class="btn" data-loading="false">开始测评</a>
+                </div>
+                <div class="scale-card" data-scale="ses">
+                    <h3><i class="fas fa-star"></i>匹兹堡睡眠质量指数 (PSQI)</h3>
+                    <p class="desc">评估近1个月睡眠质量及相关问题，包含7个维度，共19个条目</p>
+                    <a href="psqi-test.html" class="btn" data-loading="false">开始测评</a>
+                </div>
+                <div class="scale-card" data-scale="more">
+                    <h3><i class="fas fa-plus-circle"></i>更多量表正在开发中</h3>
+                    <p class="desc">我们正在开发更多专业的心理测评工具，包括情绪管理、人际关系、职业倾向等方向，敬请期待！</p>
+                    <button class="btn" disabled>即将上线</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 页脚 -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <h3>金织网</h3>
+                <p>本平台为公益性质，所有量表测试结果仅作参考，不构成专业的心理诊断。如你感到心理不适，请及时联系专业心理咨询师或精神科医生。</p>
+                <p style="margin-top: 15px; font-size: 13px;">
+                    紧急热线：希望24热线 400-161-9995 | 北京心理援助热线 010-82951332
+                </p>
+            </div>
+            <div class="copyright">
+                © 2026 金织网 公益心理平台 版权所有 | 遵循 CC BY-NC-SA 4.0 协议
+            </div>
+        </div>
+    </footer>
+
+    <!-- 主JavaScript模块 -->
+    <script>
+        // 金织网 - 主JavaScript文件
+        // 版本: 2.0.0
+        // 最后更新: 2026-01
+        
+        class GoldenWeb {
+            constructor() {
+                this.init();
+            }
+            
+            init() {
+                this.initMobileMenu();
+                this.initSmoothScroll();
+                this.initScaleCards();
+                this.initScrollDetection();
+                this.initLoadingStates();
+                this.initErrorHandling();
+                this.initPerformance();
+            }
+            
+            initMobileMenu() {
+                const mobileMenuBtn = document.querySelector('.mobile-menu');
+                const navLinks = document.querySelector('.nav-links');
+                
+                mobileMenuBtn.addEventListener('click', () => {
+                    const isExpanded = mobileMenuBtn.getAttribute('aria-expanded') === 'true';
+                    mobileMenuBtn.setAttribute('aria-expanded', !isExpanded);
+                    navLinks.classList.toggle('active');
+                    
+                    // 切换图标
+                    const icon = mobileMenuBtn.querySelector('i');
+                    icon.classList.toggle('fa-bars');
+                    icon.classList.toggle('fa-times');
+                });
+                
+                // 点击外部关闭菜单
+                document.addEventListener('click', (e) => {
+                    if (!navLinks.contains(e.target) && 
+                        !mobileMenuBtn.contains(e.target) && 
+                        navLinks.classList.contains('active')) {
+                        navLinks.classList.remove('active');
+                        mobileMenuBtn.setAttribute('aria-expanded', 'false');
+                        const icon = mobileMenuBtn.querySelector('i');
+                        icon.classList.add('fa-bars');
+                        icon.classList.remove('fa-times');
+                    }
+                });
+                
+                // ESC键关闭菜单
+                document.addEventListener('keydown', (e) => {
+                    if (e.key === 'Escape' && navLinks.classList.contains('active')) {
+                        navLinks.classList.remove('active');
+                        mobileMenuBtn.setAttribute('aria-expanded', 'false');
+                        const icon = mobileMenuBtn.querySelector('i');
+                        icon.classList.add('fa-bars');
+                        icon.classList.remove('fa-times');
+                    }
+                });
+            }
+            
+            initSmoothScroll() {
+                document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                    anchor.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        
+                        const targetId = anchor.getAttribute('href');
+                        if (targetId === '#') return;
+                        
+                        const targetElement = document.querySelector(targetId);
+                        if (targetElement) {
+                            window.scrollTo({
+                                top: targetElement.offsetTop - 80,
+                                behavior: 'smooth'
+                            });
+                            
+                            // 移动端关闭菜单
+                            const navLinks = document.querySelector('.nav-links');
+                            if (navLinks.classList.contains('active')) {
+                                navLinks.classList.remove('active');
+                                const mobileMenuBtn = document.querySelector('.mobile-menu');
+                                mobileMenuBtn.setAttribute('aria-expanded', 'false');
+                                const icon = mobileMenuBtn.querySelector('i');
+                                icon.classList.add('fa-bars');
+                                icon.classList.remove('fa-times');
+                            }
+                        }
+                    });
+                });
+            }
+            
+            initScaleCards() {
+                const scaleCards = document.querySelectorAll('.scale-card');
+                
+                scaleCards.forEach(card => {
+                    // 卡片点击跳转
+                    card.addEventListener('click', (e) => {
+                        // 如果点击的是按钮或链接，不触发卡片跳转
+                        if (e.target.tagName === 'A' || 
+                            e.target.tagName === 'BUTTON' || 
+                            e.target.closest('a') || 
+                            e.target.closest('button')) {
+                            return;
+                        }
+                        
+                        const btn = card.querySelector('a.btn:not([disabled])');
+                        if (btn) {
+                            window.location.href = btn.href;
+                        }
+                    });
+                    
+                    // 键盘导航
+                    card.addEventListener('keydown', (e) => {
+                        if (e.key === 'Enter' || e.key === ' ') {
+                            e.preventDefault();
+                            const btn = card.querySelector('a.btn:not([disabled])');
+                            if (btn) {
+                                window.location.href = btn.href;
+                            }
+                        }
+                    });
+                    
+                    // 添加可访问性属性
+                    const link = card.querySelector('a.btn:not([disabled])');
+                    if (link) {
+                        card.setAttribute('tabindex', '0');
+                        card.setAttribute('role', 'link');
+                    }
+                });
+            }
+            
+            initScrollDetection() {
+                const header = document.querySelector('header');
+                
+                let ticking = false;
+                
+                window.addEventListener('scroll', () => {
+                    if (!ticking) {
+                        window.requestAnimationFrame(() => {
+                            if (window.scrollY > 10) {
+                                header.classList.add('scrolled');
+                            } else {
+                                header.classList.remove('scrolled');
+                            }
+                            ticking = false;
+                        });
+                        ticking = true;
+                    }
+                });
+            }
+            
+            initLoadingStates() {
+                // 防重复点击
+                let debounceTimer;
+                
+                document.querySelectorAll('a.btn:not([disabled])').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        const href = btn.getAttribute('href');
+                        
+                        // 锚点链接不处理
+                        if (href.startsWith('#')) return;
+                        
+                        // 防重复点击
+                        if (debounceTimer) {
+                            e.preventDefault();
+                            return;
+                        }
+                        
+                        // 非量表页面不显示加载状态
+                        if (!href.includes('.html') || href.includes('#')) return;
+                        
+                        // 显示加载状态
+                        btn.setAttribute('data-loading', 'true');
+                        btn.classList.add('loading');
+                        btn.style.pointerEvents = 'none';
+                        
+                        // 设置防抖计时器
+                        debounceTimer = setTimeout(() => {
+                            debounceTimer = null;
+                        }, 2000);
+                        
+                        // 模拟网络延迟，实际项目中移除
+                        setTimeout(() => {
+                            window.location.href = href;
+                        }, 800);
+                        
+                        e.preventDefault();
+                    });
+                });
+            }
+            
+            initErrorHandling() {
+                // 全局错误处理
+                window.addEventListener('error', (e) => {
+                    console.error('页面发生错误:', e.error);
+                    // 实际项目中可以发送错误到监控系统
+                });
+                
+                // 未处理的Promise错误
+                window.addEventListener('unhandledrejection', (e) => {
+                    console.error('未处理的Promise错误:', e.reason);
+                });
+            }
+            
+            initPerformance() {
+                // 延迟加载非关键资源
+                if ('requestIdleCallback' in window) {
+                    requestIdleCallback(() => {
+                        // 这里可以加载非关键资源
+                        console.log('空闲时间，可以加载非关键资源');
+                    });
+                }
+                
+                // 记录性能指标
+                window.addEventListener('load', () => {
+                    if ('performance' in window) {
+                        const perfEntries = performance.getEntriesByType('navigation');
+                        if (perfEntries.length > 0) {
+                            const navEntry = perfEntries[0];
+                            console.log('页面加载时间:', navEntry.loadEventEnd - navEntry.loadEventStart, 'ms');
+                        }
+                    }
+                });
+            }
+        }
+        
+        // 页面加载完成后初始化
+        document.addEventListener('DOMContentLoaded', () => {
+            const goldenWeb = new GoldenWeb();
+            
+            // 设置页面加载完成后的动画
+            setTimeout(() => {
+                document.body.classList.add('loaded');
+            }, 100);
+            
+            // 添加打印提示
+            window.addEventListener('beforeprint', () => {
+                console.log('正在打印页面...');
+                alert('打印提示：为保护隐私，打印结果将不包含个人身份信息。');
+            });
+        });
+        
+        // PWA支持检测
+        if ('serviceWorker' in navigator && window.location.protocol === 'https:') {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/sw.js').catch(err => {
+                    console.log('ServiceWorker 注册失败:', err);
+                });
+            });
+        }
+    </script>
+</body>
+</html>

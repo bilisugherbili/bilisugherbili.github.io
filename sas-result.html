@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SAS测评结果 - 金织网</title>
+    <style>
+        /* 阿格莱亚金色系变量 */
+        :root {
+            --primary-color: #D4AF37;
+            --primary-dark: #B8860B;
+            --primary-light: #F9F2D6;
+            --secondary-color: #8B7355;
+            --text-dark: #2D2926;
+            --text-gray: #5C554E;
+            --text-light: #8A817C;
+            --bg-light: #FFFAF0;
+            --bg-white: #FFFFFF;
+            --border-gray: #E8E0D0;
+            --success-color: #52c41a;
+            --warning-color: #faad14;
+            --danger-color: #f5222d;
+            --shadow-sm: 0 2px 8px rgba(212, 175, 55, 0.15);
+            --radius-md: 8px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Inter", "PingFang SC", "Microsoft YaHei", sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-light);
+            color: var(--text-dark);
+            line-height: 1.6;
+            padding: 30px 0;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* 结果卡片 */
+        .result-card {
+            background-color: var(--bg-white);
+            border-radius: var(--radius-md);
+            box-shadow: var(--shadow-sm);
+            padding: 40px;
+            margin-bottom: 30px;
+            text-align: center;
+            border: 1px solid var(--border-gray);
+        }
+
+        .result-card h2 {
+            color: var(--primary-dark);
+            margin-bottom: 30px;
+            font-size: 24px;
+        }
+
+        /* 分数展示 */
+        .score-box {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            margin-bottom: 40px;
+            flex-wrap: wrap;
+        }
+
+        .score-item {
+            padding: 20px;
+            border-radius: var(--radius-md);
+            background-color: var(--primary-light);
+            min-width: 180px;
+        }
+
+        .score-item h3 {
+            font-size: 14px;
+            color: var(--text-gray);
+            margin-bottom: 10px;
+        }
+
+        .score-item .score {
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+
+        /* 焦虑程度 */
+        .level-box {
+            padding: 20px;
+            border-radius: var(--radius-md);
+            margin-bottom: 30px;
+        }
+
+        .level-box h3 {
+            font-size: 20px;
+            margin-bottom: 10px;
+        }
+
+        .level-box .desc {
+            color: var(--text-gray);
+            line-height: 1.8;
+        }
+
+        /* 不同程度的样式 */
+        .level-none {
+            background-color: #f6ffed;
+            border: 1px solid #b7eb8f;
+        }
+        .level-none h3 {
+            color: var(--success-color);
+        }
+
+        .level-mild {
+            background-color: #fffbe6;
+            border: 1px solid #ffe58f;
+        }
+        .level-mild h3 {
+            color: var(--warning-color);
+        }
+
+        .level-moderate {
+            background-color: #fff1f0;
+            border: 1px solid #ffccc7;
+        }
+        .level-moderate h3 {
+            color: #fa8c16;
+        }
+
+        .level-severe {
+            background-color: #fff2f0;
+            border: 1px solid #ff8080;
+        }
+        .level-severe h3 {
+            color: var(--danger-color);
+        }
+
+        /* 建议部分 */
+        .suggestion-box {
+            text-align: left;
+            padding: 20px;
+            background-color: var(--primary-light);
+            border-radius: var(--radius-md);
+            margin-bottom: 30px;
+        }
+
+        .suggestion-box h3 {
+            color: var(--primary-dark);
+            margin-bottom: 15px;
+            font-size: 16px;
+        }
+
+        .suggestion-box ul {
+            padding-left: 20px;
+            color: var(--text-gray);
+            line-height: 1.8;
+        }
+
+        .suggestion-box li {
+            margin-bottom: 8px;
+        }
+
+        /* 按钮 */
+        .btn-group {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 10px 25px;
+            border-radius: var(--radius-md);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: white;
+            border: 1px solid var(--primary-dark);
+        }
+
+        .btn-primary:hover {
+            background-color: var(--primary-dark);
+        }
+
+        .btn-outline {
+            border: 1px solid var(--primary-color);
+            color: var(--primary-color);
+        }
+
+        .btn-outline:hover {
+            background-color: var(--primary-light);
+        }
+
+        /* 免责声明 */
+        .disclaimer {
+            font-size: 12px;
+            color: var(--text-gray);
+            text-align: center;
+            line-height: 1.8;
+            padding: 20px;
+            background-color: var(--bg-white);
+            border-radius: var(--radius-md);
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border-gray);
+        }
+
+        /* 响应式 */
+        @media (max-width: 768px) {
+            .result-card {
+                padding: 25px;
+            }
+
+            .score-box {
+                gap: 20px;
+            }
+
+            .score-item {
+                min-width: 140px;
+                padding: 15px;
+            }
+
+            .score-item .score {
+                font-size: 24px;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <div class="result-card">
+            <h2>焦虑自评量表（SAS）测评结果</h2>
+
+            <!-- 分数展示 -->
+            <div class="score-box">
+                <div class="score-item">
+                    <h3>原始分</h3>
+                    <div class="score" id="rawScore">--</div>
+                </div>
+                <div class="score-item">
+                    <h3>标准分</h3>
+                    <div class="score" id="standardScore">--</div>
+                </div>
+            </div>
+
+            <!-- 焦虑程度 -->
+            <div class="level-box" id="levelBox">
+                <h3 id="levelTitle">正在分析你的测评结果...</h3>
+                <p class="desc" id="levelDesc">请稍候...</p>
+            </div>
+
+            <!-- 建议部分 -->
+            <div class="suggestion-box" id="suggestionBox">
+                <h3>温馨建议</h3>
+                <ul id="suggestionList">
+                    <li>加载中...</li>
+                </ul>
+            </div>
+
+            <!-- 按钮组 -->
+            <div class="btn-group">
+                <a href="sas.html" class="btn btn-outline">重新测评</a>
+                <a href="index.html" class="btn btn-primary">返回首页</a>
+            </div>
+        </div>
+
+        <!-- 免责声明 -->
+        <div class="disclaimer">
+            <p>⚠️ 免责声明：本测评结果仅基于你填写的信息进行计算，仅作个人心理状态参考，不能替代专业的心理诊断。</p>
+            <p>如果你感到持续的焦虑不安、紧张恐惧等症状超过2周，建议及时联系专业心理咨询师或精神科医生。</p>
+        </div>
+    </div>
+
+    <script>
+        // 1. 获取URL中的分数参数
+        const urlParams = new URLSearchParams(window.location.search);
+        const rawScore = urlParams.get('raw');
+        const standardScore = parseInt(urlParams.get('standard'));
+
+        // 2. 显示分数
+        document.getElementById('rawScore').textContent = rawScore || '无效数据';
+        document.getElementById('standardScore').textContent = standardScore || '无效数据';
+
+        // 3. 根据标准分判断焦虑程度并展示
+        let levelClass, levelTitle, levelDesc, suggestions;
+
+        if (standardScore < 50) {
+            // 无焦虑
+            levelClass = 'level-none';
+            levelTitle = '无焦虑状态';
+            levelDesc = '你的情绪状态基本平稳，未表现出明显的焦虑倾向。保持当前的生活节奏，继续关注自身心理健康。';
+            suggestions = [
+                '保持规律作息和健康饮食，维持良好的身心状态；',
+                '适当进行户外活动和社交，丰富日常生活；',
+                '遇到压力时可以通过听音乐、阅读等方式放松心情。'
+            ];
+        } else if (standardScore >= 50 && standardScore <= 59) {
+            // 轻度焦虑
+            levelClass = 'level-mild';
+            levelTitle = '轻度焦虑状态';
+            levelDesc = '你可能存在轻度的紧张、焦虑情绪，属于可通过自我调节改善的范围。及时关注情绪变化，避免焦虑感累积。';
+            suggestions = [
+                '每天预留10-15分钟进行深呼吸、冥想等放松训练；',
+                '减少过度思考，专注于当下的任务，避免胡思乱想；',
+                '多与亲友沟通，倾诉内心感受，释放心理压力；',
+                '如果焦虑感持续超过1周，可考虑学习简单的情绪管理技巧。'
+            ];
+        } else if (standardScore >= 60 && standardScore <= 69) {
+            // 中度焦虑
+            levelClass = 'level-moderate';
+            levelTitle = '中度焦虑状态';
+            levelDesc = '你的焦虑症状较明显，可能已经影响到日常生活和工作学习，单纯的自我调节效果有限，建议寻求专业帮助。';
+            suggestions = [
+                '及时联系专业心理咨询师，进行一对一的心理疏导；',
+                '学习正念减压、认知行为调节等专业的情绪管理方法；',
+                '避免咖啡、浓茶等刺激性饮品，减少焦虑情绪的诱发因素；',
+                '告知家人或朋友你的状态，获得他们的理解和支持。'
+            ];
+        } else if (standardScore >= 70) {
+            // 重度焦虑
+            levelClass = 'level-severe';
+            levelTitle = '重度焦虑状态';
+            levelDesc = '你的焦虑症状较为严重，已明显影响到正常生活，需要立即寻求专业医疗帮助，避免症状进一步加重。';
+            suggestions = [
+                '尽快前往正规医院的精神科或心理科就诊，接受专业评估和治疗；',
+                '避免独处，必要时请家人或朋友陪伴在身边，防止焦虑引发的极端行为；',
+                '暂时减少高压力的工作/学习任务，优先保证身心放松和休息；',
+                '如果出现惊恐发作、濒死感等严重症状，请立即前往医院急诊。'
+            ];
+        } else {
+            // 无效数据
+            levelClass = '';
+            levelTitle = '无效的测评数据';
+            levelDesc = '无法识别你的测评分数，请重新完成测评。';
+            suggestions = [
+                '返回测评页面，确保完整回答所有20道题目；',
+                '作答时请根据自己的真实感受选择，避免随意填写；',
+                '如果多次尝试仍出现此提示，请检查网络或联系平台管理员。'
+            ];
+        }
+
+        // 4. 更新页面内容
+        const levelBox = document.getElementById('levelBox');
+        levelBox.className = `level-box ${levelClass}`;
+        document.getElementById('levelTitle').textContent = levelTitle;
+        document.getElementById('levelDesc').textContent = levelDesc;
+
+        // 5. 更新建议列表
+        const suggestionList = document.getElementById('suggestionList');
+        suggestionList.innerHTML = '';
+        suggestions.forEach(item => {
+            const li = document.createElement('li');
+            li.textContent = item;
+            suggestionList.appendChild(li);
+        });
+    </script>
+</body>
+</html>

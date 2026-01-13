@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>匹兹堡睡眠质量指数 (PSQI) 测试结果 - 金织网</title>
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/fontawesome.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/solid.min.css">
+    <style>
+        /* 全局变量与基础样式（复用平台风格） */
+        :root {
+            --primary-color: #D4AF37; 
+            --primary-dark: #B8860B; 
+            --primary-light: #F9F2D6; 
+            --text-dark: #2D2926; 
+            --text-gray: #5C554E; 
+            --bg-light: #FFFAF0; 
+            --bg-white: #FFFFFF; 
+            --border-gray: #E8E0D0; 
+            --shadow-sm: 0 2px 8px rgba(212, 175, 55, 0.15); 
+            --radius-md: 8px;
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Inter", "PingFang SC", "Microsoft YaHei", sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-light);
+            color: var(--text-dark);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* 导航样式（复用） */
+        header {
+            background-color: var(--bg-white);
+            box-shadow: var(--shadow-sm);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 70px;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+
+        .nav-links ul {
+            list-style: none;
+            display: flex;
+            gap: 30px;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text-gray);
+            font-weight: 500;
+            transition: var(--transition);
+        }
+
+        .nav-links a:hover {
+            color: var(--primary-color);
+        }
+
+        .mobile-menu {
+            display: none;
+            font-size: 24px;
+            color: var(--primary-color);
+            cursor: pointer;
+            border: none;
+            background: transparent;
+        }
+
+        /* 结果页专属样式 */
+        .result-header {
+            padding: 40px 0;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .result-header h1 {
+            font-size: 32px;
+            color: var(--primary-dark);
+            margin-bottom: 15px;
+        }
+
+        .result-header p {
+            font-size: 16px;
+            color: var(--text-gray);
+        }
+
+        /* 结果概览卡片 */
+        .result-card {
+            background-color: var(--bg-white);
+            padding: 30px;
+            border-radius: var(--radius-md);
+            box-shadow: var(--shadow-sm);
+            margin-bottom: 40px;
+            text-align: center;
+            border-top: 6px solid var(--primary-color);
+        }
+
+        .score-display {
+            font-size: 48px;
+            font-weight: 700;
+            color: var(--primary-dark);
+            margin-bottom: 10px;
+        }
+
+        .level-display {
+            font-size: 20px;
+            font-weight: 500;
+            color: #28a745; /* 默认绿色（良好），后续动态修改 */
+            margin-bottom: 20px;
+        }
+
+        .score-desc {
+            font-size: 14px;
+            color: var(--text-gray);
+            margin-bottom: 10px;
+        }
+
+        /* 详细解读卡片 */
+        .interpretation-card {
+            background-color: var(--bg-white);
+            padding: 30px;
+            border-radius: var(--radius-md);
+            box-shadow: var(--shadow-sm);
+            margin-bottom: 40px;
+        }
+
+        .interpretation-card h2 {
+            font-size: 20px;
+            color: var(--primary-dark);
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .interpretation-content {
+            font-size: 16px;
+            color: var(--text-gray);
+            line-height: 1.8;
+            margin-bottom: 20px;
+        }
+
+        .interpretation-content p {
+            margin-bottom: 15px;
+        }
+
+        /* 助眠方法卡片 */
+        .sleep-tips-card {
+            background-color: var(--primary-light);
+            padding: 30px;
+            border-radius: var(--radius-md);
+            box-shadow: var(--shadow-sm);
+            margin-bottom: 40px;
+            border-left: 4px solid var(--primary-color);
+        }
+
+        .sleep-tips-card h2 {
+            font-size: 20px;
+            color: var(--primary-dark);
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .tips-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        .tip-item {
+            background-color: var(--bg-white);
+            padding: 20px;
+            border-radius: var(--radius-md);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .tip-item h3 {
+            font-size: 16px;
+            color: var(--primary-dark);
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .tip-item p {
+            font-size: 14px;
+            color: var(--text-gray);
+            line-height: 1.7;
+        }
+
+        /* 风险提示卡片 */
+        .warning-card {
+            background-color: #fff3cd;
+            padding: 20px;
+            border-radius: var(--radius-md);
+            border: 1px solid #ffeeba;
+            margin-bottom: 40px;
+            color: #856404;
+            font-size: 14px;
+        }
+
+        .warning-card h3 {
+            font-size: 16px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        /* 操作按钮区域 */
+        .action-buttons {
+            text-align: center;
+            padding: 20px 0 60px;
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .action-btn {
+            padding: 12px 30px;
+            border-radius: var(--radius-md);
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .btn-primary:hover {
+            background-color: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+
+        .btn-outline {
+            background-color: transparent;
+            color: var(--primary-color);
+            border: 1px solid var(--primary-color);
+        }
+
+        .btn-outline:hover {
+            background-color: var(--primary-light);
+        }
+
+        /* 隐私提示 */
+        .privacy-tip {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: var(--radius-md);
+            font-size: 14px;
+            color: var(--text-gray);
+            margin-bottom: 40px;
+            text-align: center;
+            border: 1px solid var(--border-gray);
+        }
+
+        /* 页脚 */
+        footer {
+            background-color: var(--text-dark);
+            color: var(--primary-light);
+            padding: 30px 0 20px;
+            text-align: center;
+            border-top: 3px solid var(--primary-color);
+            font-size: 12px;
+        }
+
+        /* 响应式适配 */
+        @media (max-width: 768px) {
+            .nav-links ul {
+                display: none;
+            }
+
+            .mobile-menu {
+                display: block;
+            }
+
+            .result-header h1 {
+                font-size: 26px;
+            }
+
+            .score-display {
+                font-size: 36px;
+            }
+
+            .interpretation-card, .sleep-tips-card {
+                padding: 20px;
+            }
+
+            .tips-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .action-btn {
+                width: 100%;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .header-content {
+                height: 60px;
+            }
+
+            .logo {
+                font-size: 20px;
+            }
+
+            .result-header {
+                padding: 30px 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 导航栏 -->
+    <header>
+        <div class="header-content">
+            <div class="logo">
+                <i class="fas fa-star" aria-label="金织网logo"></i>
+                金织网
+            </div>
+            <nav class="nav-links">
+                <ul>
+                    <li><a href="index.html">首页</a></li>
+                    <li><a href="index.html#scales">量表测试</a></li>
+                    <li><a href="about.html">关于我们</a></li>
+                    <li><a href="help.html">帮助中心</a></li>
+                </ul>
+            </nav>
+            <button class="mobile-menu" aria-label="打开移动端导航菜单">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+    </header>
+
+    <!-- 结果页头部 -->
+    <div class="result-header">
+        <div class="container">
+            <h1>匹兹堡睡眠质量指数 (PSQI) 测试结果</h1>
+            <p>以下结果基于你近1个月的睡眠情况作答生成，仅作睡眠健康参考</p>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- 结果概览 -->
+        <div class="result-card" id="resultCard">
+            <div class="score-display" id="totalScore">--</div>
+            <div class="level-display" id="sleepLevel">--</div>
+            <div class="score-desc">PSQI总分范围：0-21分，分数越高表示睡眠质量越差</div>
+        </div>
+
+        <!-- 隐私提示 -->
+        <div class="privacy-tip">
+            <i class="fas fa-shield-alt" style="color: var(--primary-color); margin-right: 8px;"></i>
+            提示：平台未存储你的测试数据，关闭此页面后将无法查看结果，建议你截图保存
+        </div>
+
+        <!-- 详细解读 -->
+        <div class="interpretation-card">
+            <h2><i class="fas fa-chart-line" style="color: var(--primary-color);"></i> 结果解读</h2>
+            <div class="interpretation-content" id="interpretationContent">
+                <!-- 解读内容通过JS动态生成 -->
+            </div>
+        </div>
+
+        <!-- 助眠方法卡片 -->
+        <div class="sleep-tips-card">
+            <h2><i class="fas fa-moon" style="color: var(--primary-color);"></i> 实用助眠方法</h2>
+            <div class="tips-grid">
+                <div class="tip-item">
+                    <h3><i class="fas fa-bed" style="color: var(--primary-color);"></i> 建立规律的睡眠节律</h3>
+                    <p>每天固定时间上床和起床，即使周末/节假日也保持一致，帮助身体形成稳定的生物钟；睡前1小时远离电子屏幕（手机/电脑/电视），蓝光会抑制褪黑素分泌。</p>
+                </div>
+                <div class="tip-item">
+                    <h3><i class="fas fa-walking" style="color: var(--primary-color);"></i> 优化睡前行为习惯</h3>
+                    <p>睡前可进行轻度放松活动：如温水泡脚（40℃左右，15分钟）、听舒缓音乐、阅读纸质书；避免睡前1小时剧烈运动、吸烟、饮酒、喝咖啡/浓茶；晚餐不宜过饱，避免辛辣/油腻食物。</p>
+                </div>
+                <div class="tip-item">
+                    <h3><i class="fas fa-home" style="color: var(--primary-color);"></i> 打造舒适的睡眠环境</h3>
+                    <p>卧室保持黑暗（可用遮光窗帘）、安静（可用白噪音机）、凉爽（温度控制在18-22℃）；选择软硬适中的床垫和高度合适的枕头；床仅用于睡眠，避免在床上工作/学习/刷手机。</p>
+                </div>
+                <div class="tip-item">
+                    <h3><i class="fas fa-brain" style="color: var(--primary-color);"></i> 调节睡前心理状态</h3>
+                    <p>若躺下20分钟仍无法入睡，可起床到昏暗房间做放松事（如折纸/深呼吸），有困意再回床；睡前5分钟做“正念呼吸”：专注吸气4秒→屏息4秒→呼气6秒，重复5-10次；避免睡前过度思考工作/烦恼事，可提前写“待办清单”释放焦虑。</p>
+                </div>
+                <div class="tip-item">
+                    <h3><i class="fas fa-sun" style="color: var(--primary-color);"></i> 改善日间活动模式</h3>
+                    <p>每天保证30分钟左右的户外光照（如上午散步），帮助调节生物钟；白天午睡控制在20-30分钟，且不晚于下午3点；避免长期久坐，每天保持适量运动（如快走/瑜伽），但睡前3小时内避免高强度运动。</p>
+                </div>
+                <div class="tip-item">
+                    <h3><i class="fas fa-pills" style="color: var(--primary-color);"></i> 合理使用助眠产品</h3>
+                    <p>不建议长期依赖安眠药，如需使用需遵医嘱；可尝试天然助眠食材：睡前喝温牛奶（含色氨酸）、吃少量坚果（如核桃）；薰衣草精油（香薰/涂抹）可辅助放松，但过敏者禁用。</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 风险提示 -->
+        <div class="warning-card" id="warningCard">
+            <h3><i class="fas fa-exclamation-triangle"></i> 健康提示</h3>
+            <p id="warningText">测试结果仅作参考，若长期存在入睡困难、易醒、日间嗜睡等问题，且影响工作/生活，建议及时到正规医院睡眠科或神经内科就诊。</p>
+        </div>
+
+        <!-- 操作按钮 -->
+        <div class="action-buttons">
+            <a href="psqi-test.html" class="action-btn btn-outline">重新测试</a>
+            <a href="index.html" class="action-btn btn-primary">返回首页</a>
+        </div>
+    </div>
+
+    <!-- 页脚 -->
+    <footer>
+        <div class="container">
+            <p>© <script>document.write(new Date().getFullYear())</script> 金织网 公益心理平台 | 测试结果仅作参考，不构成专业医疗诊断</p>
+            <p style="margin-top: 8px;">若你长期受睡眠问题困扰，建议联系专业医疗机构进行评估</p>
+        </div>
+    </footer>
+
+    <script>
+        // 1. 移动端菜单交互
+        const mobileMenu = document.querySelector('.mobile-menu');
+        const navUl = document.querySelector('.nav-links ul');
+        mobileMenu.addEventListener('click', () => {
+            navUl.style.display = navUl.style.display === 'flex' ? 'none' : 'flex';
+            if (navUl.style.display === 'flex') {
+                navUl.style.flexDirection = 'column';
+                navUl.style.position = 'absolute';
+                navUl.style.top = '70px';
+                navUl.style.left = '0';
+                navUl.style.right = '0';
+                navUl.style.background = 'white';
+                navUl.style.padding = '20px';
+                navUl.style.boxShadow = '0 4px 8px rgba(0,0,0,0.1)';
+                mobileMenu.innerHTML = '<i class="fas fa-times"></i>';
+            } else {
+                mobileMenu.innerHTML = '<i class="fas fa-bars"></i>';
+            }
+        });
+
+        // 2. 解析URL参数中的总分，生成结果
+        function getQueryParam(param) {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get(param);
+        }
+
+        // 初始化结果页
+        function initResultPage() {
+            // 获取总分
+            const score = parseInt(getQueryParam('score'));
+            const scoreEl = document.getElementById('totalScore');
+            const levelEl = document.getElementById('sleepLevel');
+            const interpretationEl = document.getElementById('interpretationContent');
+            const warningTextEl = document.getElementById('warningText');
+
+            // 验证分数有效性
+            if (isNaN(score) || score < 0 || score > 21) {
+                scoreEl.textContent = '无效分数';
+                levelEl.textContent = '测试数据异常';
+                levelEl.style.color = '#dc3545';
+                interpretationEl.innerHTML = '<p>无法获取有效的测试分数，请重新完成测试。</p>';
+                warningTextEl.textContent = '请返回测试页，重新认真作答所有题目，确保数据有效。';
+                return;
+            }
+
+            // 显示总分
+            scoreEl.textContent = score;
+
+            // 判定睡眠质量等级并生成解读
+            let level, levelColor, interpretation, warning;
+            if (score <= 5) {
+                // 睡眠质量良好
+                level = '睡眠质量良好';
+                levelColor = '#28a745';
+                interpretation = `
+                    <p>你的PSQI得分为${score}分，处于良好区间，说明你近1个月的睡眠质量整体优秀。</p>
+                    <p>你大概率拥有稳定的睡眠节律：入睡快、睡眠时间充足、睡眠过程少中断，且睡眠问题几乎不影响日间活动。良好的睡眠是身心健康的重要基础，继续保持当前的睡眠习惯。</p>
+                    <p>需要注意：即使睡眠质量良好，也建议持续保持健康的睡眠习惯，避免因短期作息紊乱（如熬夜、倒班）破坏稳定的生物钟。</p>
+                `;
+                warning = '你的睡眠质量处于健康水平，无需过度关注；若偶尔出现睡眠波动，可通过调整作息快速恢复，无需特殊干预。';
+            } else if (score <= 10) {
+                // 睡眠质量一般
+                level = '睡眠质量一般';
+                levelColor = '#ffc107';
+                interpretation = `
+                    <p>你的PSQI得分为${score}分，处于一般区间，说明你近1个月存在轻度睡眠问题。</p>
+                    <p>可能的表现：偶尔入睡困难（超过15分钟）、夜间易醒1-2次、睡眠时间略不足（6-7小时），或轻度日间困倦，但尚未明显影响工作/学习。这类问题多与近期压力、作息不规律、睡前使用电子设备相关。</p>
+                    <p>及时调整生活习惯可有效改善，避免小问题发展为长期失眠。</p>
+                `;
+                warning = '若轻度睡眠问题持续超过2周，建议优先通过调整生活习惯改善；若伴随轻度焦虑/压力，可尝试正念放松、睡前冥想等方式缓解。';
+            } else {
+                // 睡眠质量较差
+                level = '睡眠质量较差';
+                levelColor = '#dc3545';
+                interpretation = `
+                    <p>你的PSQI得分为${score}分，处于较差区间，说明你近1个月存在明显的睡眠问题。</p>
+                    <p>可能的表现：频繁入睡困难（超过30分钟）、夜间频繁醒转、总睡眠时间不足6小时、睡眠效率低（卧床时间远大于实际睡眠时间），且睡眠问题已明显影响日间状态（如困倦、精力不足、注意力不集中）。</p>
+                    <p>长期睡眠差会影响免疫力、情绪调节和认知功能，需重视并及时干预。</p>
+                `;
+                warning = '若明显睡眠问题持续超过1个月，或伴随头痛、胸闷、情绪低落等症状，建议尽快到正规医院睡眠科/神经内科就诊，排查是否存在失眠症、睡眠呼吸暂停等睡眠障碍，避免自行长期服用安眠药。';
+            }
+
+            // 渲染内容
+            levelEl.textContent = level;
+            levelEl.style.color = levelColor;
+            interpretationEl.innerHTML = interpretation;
+            warningTextEl.textContent = warning;
+        }
+
+        // 页面加载时初始化结果
+        window.onload = initResultPage;
+    </script>
+</body>
+</html>

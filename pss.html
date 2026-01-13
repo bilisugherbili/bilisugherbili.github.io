@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>压力知觉量表（PSS-14）- 金织网</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* 沿用 SDS 金色系变量，保持一致性 */
+        :root {
+            --primary-color: #D4AF37;
+            --primary-dark: #B8860B;
+            --primary-light: #F9F2D6;
+            --secondary-color: #8B7355;
+            --text-dark: #2D2926;
+            --text-gray: #5C554E;
+            --text-light: #8A817C;
+            --bg-light: #FFFAF0;
+            --bg-white: #ffffff;
+            --border-gray: #E8E0D0;
+            --shadow-sm: 0 2px 8px rgba(212, 175, 55, 0.15);
+            --radius-sm: 6px;
+            --radius-md: 8px;
+            --transition: all 0.3s ease;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: "Inter", "PingFang SC", "Microsoft YaHei", sans-serif; }
+        body { background-color: var(--bg-light); color: var(--text-dark); line-height: 1.6; }
+        .container { max-width: 900px; margin: 0 auto; padding: 0 20px; }
+        header { background-color: var(--bg-white); box-shadow: var(--shadow-sm); padding: 15px 0; }
+        .header-content { display: flex; justify-content: space-between; align-items: center; }
+        .logo { display: flex; align-items: center; gap: 10px; font-size: 20px; font-weight: 700; color: var(--primary-color); text-decoration: none; }
+        .logo span { color: var(--primary-dark); }
+        .test-guide, .test-form { background-color: var(--bg-white); border-radius: var(--radius-md); box-shadow: var(--shadow-sm); padding: 30px; margin: 30px 0; border: 1px solid var(--border-gray); }
+        .test-guide h2 { color: var(--primary-dark); margin-bottom: 15px; font-size: 22px; }
+        .test-guide p { color: var(--text-gray); margin-bottom: 10px; font-size: 14px; line-height: 1.7; }
+        .question { margin-bottom: 25px; padding-bottom: 25px; border-bottom: 1px solid var(--border-gray); }
+        .question:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+        .question h3 { font-size: 16px; font-weight: 600; margin-bottom: 15px; color: var(--text-dark); }
+        .options { display: flex; flex-wrap: wrap; gap: 15px; }
+        .option { display: flex; align-items: center; gap: 8px; cursor: pointer; padding: 8px 15px; border: 1px solid var(--border-gray); border-radius: var(--radius-sm); transition: var(--transition); }
+        .option:hover { border-color: var(--primary-color); background-color: var(--primary-light); }
+        .option input { accent-color: var(--primary-color); }
+        .submit-btn { display: block; width: 100%; padding: 12px; background-color: var(--primary-color); color: white; border: 1px solid var(--primary-dark); border-radius: var(--radius-md); font-size: 16px; font-weight: 600; cursor: pointer; transition: var(--transition); margin-top: 20px; }
+        .submit-btn:hover { background-color: var(--primary-dark); }
+        @media (max-width: 768px) { .options { flex-direction: column; gap: 10px; } .test-guide, .test-form { padding: 20px; } }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container header-content">
+            <a href="index.html" class="logo">
+                <i class="fas fa-hand-holding-heart"></i>
+                <span>金</span>织网
+            </a>
+            <div>压力知觉量表（PSS-14）</div>
+        </div>
+    </header>
+
+    <div class="container">
+        <!-- 测试说明 -->
+        <div class="test-guide">
+            <h2>测试说明</h2>
+            <p>1. 本量表共 14 题，用于评估您最近一个月对生活中「不可控、不可预期」事件的主观知觉压力。</p>
+            <p>2. 每题有 5 个选项：A（从不）、B（偶尔）、C（有时）、D（经常）、E（总是）。</p>
+            <p>3. 请根据您的真实感受作答，答案无对错，数据仅作个人参考，我们严格保护您的隐私。</p>
+            <p>4. 完成所有题目后点击「提交测评」，系统将自动计算原始分数并展示结果。</p>
+        </div>
+
+        <!-- 测试表单 -->
+        <form id="pssForm" class="test-form">
+            <!-- 正向计分 7 题 -->
+            <div class="question">
+                <h3>1. 在过去一个月里，有多少时候你会因为发生意外的事情而感到心烦？</h3>
+                <div class="options">
+                    <label class="option"><input type="radio" name="q1" value="0" required>A：从不</label>
+                    <label class="option"><input type="radio" name="q1" value="1">B：偶尔</label>
+                    <label class="option"><input type="radio" name="q1" value="2">C：有时</label>
+                    <label class="option"><input type="radio" name="q1" value="3">D：经常</label>
+                    <label class="option"><input type="radio" name="q1" value="4">E：总是</label>
+                </div>
+            </div>
+
+            <div class="question">
+                <h3>2. 在过去一个月里，有多少时候你感到自己无法控制生活中重要的事情？</h3>
+                <div class="options">
+                    <label class="option"><input type="radio" name="q2" value="0" required>A：从不</label>
+                    <label class="option"><input type="radio" name="q2" value="1">B：偶尔</label>
+                    <label class="option"><input type="radio" name="q2" value="2">C：有时</label>
+                    <label class="option"><input type="radio" name="q2" value="3">D：经常</label>
+                    <label class="option"><input type="radio" name="q2" value="4">E：总是</label>
+                </div>
+            </div>
+
+            <div class="question">
+                <h3>3. 在过去一个月里，有多少时候你感到紧张或「有压力」？</h3>
+                <div class="options">
+                    <label class="option"><input type="radio" name="q3" value="0" required>A：从不</label>
+                    <label class="option"><input type="radio" name="q3" value="1">B：偶尔</label>
+                    <label class="option"><input type="radio" name="q3" value="2">C：有时</label>
+                    <label class="option"><input type="radio" name="q3" value="3">D：经常</label>
+                    <label class="option"><input type="radio" name="q3" value="4">E：总是</label>
+                </div>
+            </div>
+
+            <div class="question">
+                <h3>6. 在过去一个月里，有多少时候你发现自己无法应付那些必须完成的事情？</h3>
+                <div class="options">
+                    <label class="option"><input type="radio" name="q6" value="0" required>A：从不</label>
+                    <label class="option"><input type="radio" name="q6" value="1">B：偶尔</label>
+                    <label class="option"><input type="radio" name="q6" value="2">C：有时</label>
+                    <label class="option"><input type="radio" name="q6" value="3">D：经常</label>
+                    <label class="option"><input type="radio" name="q6" value="4">E：总是</label>
+                </div>
+            </div>
+
+            <div class="question">
+                <h3>9. 在过去一个月里，有多少时候你因为事情超出控制而感到恼怒？</h3>
+                <div class="options">
+                    <label class="option"><input type="radio" name="q9" value="0" required>A：从不</label>
+                    <label class="option"><input type="radio" name="q9" value="1">B：偶尔</label>
+                    <label class="option"><input type="radio" name="q9" value="2">C：有时</label>
+                    <label class="option"><input type="radio" name="q9" value="3">D：经常</label>
+                    <label class="option"><input type="radio" name="q9" value="4">E：总是</label>
+                </div>
+            </div>
+
+            <div class="question">
+                <h3>10. 在过去一个月里，有多少时候你感到困难堆积得无法克服？</h3>
+                <div class="options">
+                    <label class="option"><input type="radio" name="q10" value="0" required>A：从不</label>
+                    <label class="option"><input type="radio" name="q10" value="1">B：偶尔</label>
+                    <label class="option"><input type="radio" name="q10" value="2">C：有时</label>
+                    <label class="option"><input type="radio" name="q10" value="3">D：经常</label>
+                    <label class="option"><input type="radio" name="q10" value="4">E：总是</label>
+                </div>
+            </div>
+
+            <div class="question">
+                <h3>13. 在过去一个月里，有多少时候你感到无法掌控自己时间安排？</h3>
+                <div class="options">
+                    <label class="option"><input type="radio" name="q13" value="0" required>A：从不</label>
+                    <label class="option"><input type="radio" name="q13" value="1">B：偶尔</label>
+                    <label class="option"><input type="radio" name="q13" value="2">C：有时</label>
+                    <label class="option"><input type="radio" name="q13" value="3">D：经常</label>
+                    <label class="option"><input type="radio" name="q13" value="4">E：总是</label>
+                </div>
+            </div>
+
+            <!-- 反向计分 7 题 -->
+            <div class="question">
+                <h3>4. 在过去一个月里，有多少时候你对自己处理个人问题的能力感到有信心？</h3>
+                <div class="options">
+                    <label class="option"><input type="radio" name="q4" value="4" required>A：从不</label>
+                    <label class="option"><input type="radio" name="q4" value="3">B：偶尔</label>
+                    <label class="option"><input type="radio" name="q4" value="2">C：有时</label>
+                    <label class="option"><input type="radio" name="q4" value="1">D：经常</label>
+                    <label class="option"><input type="radio" name="q4" value="0">E：总是</label>
+                </div>
+            </div>
+
+            <div class="question">
+                <h3>5. 在过去一个月里，有多少时候你感到事情在按自己意愿发展？</h3>
+                <div class="options">
+                    <label class="option"><input type="radio" name="q5" value="4" required>A：从不</label>
+                    <label class="option"><input type="radio" name="q5" value="3">B：偶尔</label>
+                    <label class="option"><input type="radio" name="q5" value="2">C：有时</label>
+                    <label class="option"><input type="radio" name="q5" value="1">D：经常</label>
+                    <label class="option"><input type="radio" name="q5" value="0">E：总是</label>
+                </div>
+            </div>
+
+            <div class="question">
+                <h3>7. 在过去一个月里，有多少时候你感到能控制生活中的愤怒情绪？</h3>
+                <div class="options">
+                    <label class="option"><input type="radio" name="q7" value="4" required>A：从不</label>
+                    <label class="option"><input type="radio" name="q7" value="3">B：偶尔</label>
+                    <label class="option"><input type="radio" name="q7" value="2">C：有时</label>
+                    <label class="option"><input type="radio" name="q7" value="1">D：经常</label>
+                    <label class="option"><input type="radio" name="q7" value="0">E：总是</label>
+                </div>
+            </div>
+
+            <div class="question">
+                <h3>8. 在过去一个月里，有多少时候你感到事情尽在掌握？</h3>
+                <div class="options">
+                    <label class="option"><input type="radio" name="q8" value="4" required>A：从不</label>
+                    <label class="option"><input type="radio" name="q8" value="3">B：偶尔</label>
+                    <label class="option"><input type="radio" name="q8" value="2">C：有时</label>
+                    <label class="option"><input type="radio" name="q8" value="1">D：经常</label>
+                    <label class="option"><input type="radio" name="q8" value="0">E：总是</label>
+                </div>
+            </div>
+
+            <div class="question">
+                <h3>11. 在过去一个月里，有多少时候你因为能够控制时间安排而感到自在？</h3>
+                <div class="options">
+                    <label class="option"><input type="radio" name="q11" value="4" required>A：从不</label>
+                    <label class="option"><input type="radio" name="q11" value="3">B：偶尔</label>
+                    <label class="option"><input type="radio" name="q11" value="2">C：有时</label>
+                    <label class="option"><input type="radio" name="q11" value="1">D：经常</label>
+                    <label class="option"><input type="radio" name="q11" value="0">E：总是</label>
+                </div>
+            </div>
+
+            <div class="question">
+                <h3>12. 在过去一个月里，有多少时候你感到困难是可以解决的？</h3>
+                <div class="options">
+                    <label class="option"><input type="radio" name="q12" value="4" required>A：从不</label>
+                    <label class="option"><input type="radio" name="q12" value="3">B：偶尔</label>
+                    <label class="option"><input type="radio" name="q12" value="2">C：有时</label>
+                    <label class="option"><input type="radio" name="q12" value="1">D：经常</label>
+                    <label class="option"><input type="radio" name="q12" value="0">E：总是</label>
+                </div>
+            </div>
+
+            <div class="question">
+                <h3>14. 在过去一个月里，有多少时候你感到生活有意义？</h3>
+                <div class="options">
+                    <label class="option"><input type="radio" name="q14" value="4" required>A：从不</label>
+                    <label class="option"><input type="radio" name="q14" value="3">B：偶尔</label>
+                    <label class="option"><input type="radio" name="q14" value="2">C：有时</label>
+                    <label class="option"><input type="radio" name="q14" value="1">D：经常</label>
+                    <label class="option"><input type="radio" name="q14" value="0">E：总是</label>
+                </div>
+            </div>
+
+            <button type="submit" class="submit-btn">提交测评</button>
+        </form>
+    </div>
+
+    <script>
+        /* 计分与跳转 */
+        document.getElementById('pssForm').addEventListener('submit', function (e) {
+            e.preventDefault();
+            const questions = [
+                'q1','q2','q3','q4','q5','q6','q7','q8','q9','q10','q11','q12','q13','q14'
+            ];
+            let total = 0;
+            questions.forEach(q => {
+                const sel = document.querySelector(`input[name="${q}"]:checked`);
+                if (sel) total += parseInt(sel.value);
+            });
+            // PSS 无换算，raw=standard
+            window.location.href = `stress-result.html?raw=${total}&standard=${total}`;
+        });
+    </script>
+</body>
+</html>

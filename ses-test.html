@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>自尊量表（SES）- 金织网</title>
+    <!-- 复用CDN和样式变量 -->
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/fontawesome.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/solid.min.css">
+    <style>
+        /* 全局变量与基础样式（复用） */
+        :root {
+            --primary-color: #D4AF37; 
+            --primary-dark: #B8860B; 
+            --primary-light: #F9F2D6; 
+            --text-dark: #2D2926; 
+            --text-gray: #5C554E; 
+            --bg-light: #FFFAF0; 
+            --bg-white: #FFFFFF; 
+            --border-gray: #E8E0D0; 
+            --shadow-sm: 0 2px 8px rgba(212, 175, 55, 0.15); 
+            --radius-md: 8px;
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Inter", "PingFang SC", "Microsoft YaHei", sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-light);
+            color: var(--text-dark);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* 导航样式（复用） */
+        header {
+            background-color: var(--bg-white);
+            box-shadow: var(--shadow-sm);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 70px;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+
+        .nav-links ul {
+            list-style: none;
+            display: flex;
+            gap: 30px;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text-gray);
+            font-weight: 500;
+            transition: var(--transition);
+        }
+
+        .nav-links a:hover {
+            color: var(--primary-color);
+        }
+
+        .mobile-menu {
+            display: none;
+            font-size: 24px;
+            color: var(--primary-color);
+            cursor: pointer;
+            border: none;
+            background: transparent;
+        }
+
+        /* 测试页专属样式 */
+        .test-header {
+            padding: 40px 0;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .test-header h1 {
+            font-size: 32px;
+            color: var(--primary-dark);
+            margin-bottom: 15px;
+        }
+
+        .test-header p {
+            font-size: 16px;
+            color: var(--text-gray);
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        /* 量表说明卡片 */
+        .test-intro {
+            background-color: var(--bg-white);
+            padding: 25px;
+            border-radius: var(--radius-md);
+            box-shadow: var(--shadow-sm);
+            margin-bottom: 40px;
+            border-left: 4px solid var(--primary-color);
+        }
+
+        .test-intro h2 {
+            font-size: 18px;
+            color: var(--primary-dark);
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .test-intro p {
+            font-size: 14px;
+            color: var(--text-gray);
+            line-height: 1.7;
+            margin-bottom: 8px;
+        }
+
+        /* 题目容器 */
+        .questions-container {
+            margin-bottom: 40px;
+        }
+
+        .question-card {
+            background-color: var(--bg-white);
+            padding: 25px;
+            border-radius: var(--radius-md);
+            box-shadow: var(--shadow-sm);
+            margin-bottom: 20px;
+            transition: var(--transition);
+        }
+
+        .question-card:hover {
+            box-shadow: 0 4px 12px rgba(212, 175, 55, 0.2);
+        }
+
+        .question-number {
+            font-weight: 600;
+            color: var(--primary-color);
+            margin-bottom: 10px;
+            font-size: 16px;
+        }
+
+        .question-text {
+            font-size: 16px;
+            margin-bottom: 20px;
+            color: var(--text-dark);
+        }
+
+        /* 选项样式 */
+        .options {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .option-item {
+            flex: 1;
+            min-width: 120px;
+        }
+
+        .option-item input {
+            display: none;
+        }
+
+        .option-item label {
+            display: block;
+            padding: 10px 15px;
+            border: 1px solid var(--border-gray);
+            border-radius: var(--radius-md);
+            text-align: center;
+            cursor: pointer;
+            transition: var(--transition);
+            font-size: 14px;
+        }
+
+        .option-item input:checked + label {
+            background-color: var(--primary-light);
+            border-color: var(--primary-color);
+            color: var(--primary-dark);
+            font-weight: 500;
+        }
+
+        .option-item label:hover {
+            border-color: var(--primary-color);
+        }
+
+        /* 提交区域 */
+        .submit-area {
+            text-align: center;
+            padding: 20px 0 60px;
+        }
+
+        .progress-text {
+            font-size: 14px;
+            color: var(--text-gray);
+            margin-bottom: 20px;
+        }
+
+        .submit-btn {
+            padding: 12px 40px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: var(--radius-md);
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .submit-btn:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+
+        .submit-btn:not(:disabled):hover {
+            background-color: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+
+        /* 页脚 */
+        footer {
+            background-color: var(--text-dark);
+            color: var(--primary-light);
+            padding: 30px 0 20px;
+            text-align: center;
+            border-top: 3px solid var(--primary-color);
+            font-size: 12px;
+        }
+
+        /* 响应式适配 */
+        @media (max-width: 768px) {
+            .nav-links ul {
+                display: none;
+            }
+
+            .mobile-menu {
+                display: block;
+            }
+
+            .test-header h1 {
+                font-size: 26px;
+            }
+
+            .options {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .question-card {
+                padding: 20px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .header-content {
+                height: 60px;
+            }
+
+            .logo {
+                font-size: 20px;
+            }
+
+            .test-header {
+                padding: 30px 0;
+            }
+
+            .test-intro {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 导航栏 -->
+    <header>
+        <div class="header-content">
+            <div class="logo">
+                <i class="fas fa-star" aria-label="金织网logo"></i>
+                金织网
+            </div>
+            <nav class="nav-links">
+                <ul>
+                    <li><a href="index.html">首页</a></li>
+                    <li><a href="index.html#scales">量表测试</a></li>
+                    <li><a href="about.html">关于我们</a></li>
+                    <li><a href="help.html">帮助中心</a></li>
+                </ul>
+            </nav>
+            <button class="mobile-menu" aria-label="打开移动端导航菜单">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+    </header>
+
+    <!-- 测试页头部 -->
+    <div class="test-header">
+        <div class="container">
+            <h1>自尊量表（SES）测试</h1>
+            <p>本量表用于评估你的整体自尊水平，共10道题目，预计耗时3-5分钟，请根据自身实际情况作答</p>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- 量表说明 -->
+        <div class="test-intro">
+            <h2><i class="fas fa-info-circle" style="color: var(--primary-color);"></i> 作答须知</h2>
+            <p>1. 请根据你的真实感受选择答案，无需刻意迎合“正面”选项，真实作答才能反映你的实际状态；</p>
+            <p>2. 每个题目有4个选项：1=很不符合，2=不符合，3=符合，4=非常符合；</p>
+            <p>3. 必须答完所有题目才能提交，提交后将立即生成测试结果；</p>
+            <p>4. 测试结果仅作个人参考，不构成任何专业诊断。</p>
+        </div>
+
+        <!-- 题目容器 -->
+        <form id="sesTestForm" class="questions-container">
+            <!-- 题目1（正向计分） -->
+            <div class="question-card">
+                <div class="question-number">题目 1/10</div>
+                <div class="question-text">我认为自己是个有价值的人，至少与别人不相上下。</div>
+                <div class="options">
+                    <div class="option-item">
+                        <input type="radio" name="q1" id="q1-1" value="1">
+                        <label for="q1-1">1. 很不符合</label>
+                    </div>
+                    <div class="option-item">
+                        <input type="radio" name="q1" id="q1-2" value="2">
+                        <label for="q1-2">2. 不符合</label>
+                    </div>
+                    <div class="option-item">
+                        <input type="radio" name="q1" id="q1-3" value="3">
+                        <label for="q1-3">3. 符合</label>
+                    </div>
+                    <div class="option-item">
+                        <input type="radio" name="q1" id="q1-4" value="4">
+                        <label for="q1-4">4. 非常符合</label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 题目2（反向计分） -->
+            <div class="question-card">
+                <div class="question-number">题目 2/10</div>
+                <div class="question-text">我觉得自己有许多缺点。</div>
+                <div class="options">
+                    <div class="option-item">
+                        <input type="radio" name="q2" id="q2-1" value="1">
+                        <label for="q2-1">1. 很不符合</label>
+                    </div>
+                    <div class="option-item">
+                        <input type="radio" name="q2" id="q2-2" value="2">
+                        <label for="q2-2">2. 不符合</label>
+                    </div>
+                    <div class="option-item">
+                        <input type="radio" name="q2" id="q2-3" value="3">
+                        <label for="q2-3">3. 符合</label>
+                    </div>
+                    <div class="option-item">
+                        <input type="radio" name="q2" id="q2-4" value="4">
+                        <label for="q2-4">4. 非常符合</label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 题目3（正向计分） -->
+            <div class="question-card">
+                <div class="question-number">题目 3/10</div>
+                <div class="question-text">我感到自己有许多好的品质。</div>
+                <div class="options">
+                    <div class="option-item">
+                        <input type="radio" name="q3" id="q3-1" value="1">
+                        <label for="q3-1">1. 很不符合</label>
+                    </div>
+                    <div class="option-item">
+                        <input type="radio" name="q3" id="q3-2" value="2">
+                        <label for="q3-2">2. 不符合</label>
+                    </div>
+                    <div class="option-item">
+                        <input type="radio" name="q3" id="q3-3" value="3">
+                        <label for="q3-3">3. 符合</label>
+                    </div>
+                    <div class="option-item">
+                        <input type="radio" name="q3" id="q3-4" value="4">
+                        <label for="q3-4">4. 非常符合</label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 题目4（正向计分） -->
+            <div class="question-card">
+                <div class="question-number">题目 4/10</div>
+                <div class="question-text">我能像大多数人一样把事情做好。</div>
+                <div class="options">
+                    <div class="option-item">
+                        <input type="radio" name="q4" id="q4-1" value="1">
+                        <label for="q4-1">1. 很不符合</label>
+                    </div>
+                    <div class="option-item">
+                        <input type="radio" name="q4" id="q4-2" value="2">
+                        <label for="q4-2">2. 不符合</label>
+                    </div>
+                    <div class="option-item">
+                        <input type="radio" name="q4" id="q4-3" value="3">
+                        <label for="q4-3">3. 符合</label>
+                    </div>
+                    <div class="option-item">
+                        <input type="radio" name="q4" id="q4-4" value="4">
+                        <label for="q4-4">4. 非常符合</label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 题目5（反向计分） -->
+            <div class="question-card">
+                <div class="question-number">题目 5/10</div>
+                <div class="question-text">我觉得自己没什么值得自豪的。</div>
+                <div class="options">
+                    <div class="option-item">
+                        <input type="radio" name="q5" id="q5-1" value="1">
+                        <label for="q5-1">1. 很不符合</label>
+                    </div>
+                    <div class="option-item">
+                        <input type="radio" name="q5" id="q5-2" value="2">
+                        <label for="q5-2">2. 不符合</label>
+                    </div>
+                    <div class="option-item">
+                        <input type="radio" name="q5" id="q5-3" value="3">
+                        <label for="q5-3">3. 符合</label>
+                    </div>
+                    <div class="option-item">
+                        <input type="radio" name="q5" id="q5-4" value="4">
+                        <label for="q5-4">4. 非常符合</label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 题目6（正向计分） -->
+            <div class="question-card">
+                <div class="question-number">题目 6/10</div>
+                <div class="question-text">我对自己持肯定态度。</div>
+                <div class="options">
+                    <div class="option-item">
+                        <input type="radio" name="q6" id="q6-1" value="1">
+                        <label for="q6-1">1. 很不符合</label>
+                    </div>
+                    <div class="option-item">
+                        <input type="radio" name="q6" id="q6-2" value="2">
+                        <label for="q6-2">2. 不符合</label>
+                    </div>
+                    <div class="option-item">
+                        <input type="radio" name="q6" id="q6-3" value="3">
+                        <label for="q6-3">3. 符合</label>
+                    </div>
+                    <div class="option-item">
+                        <input type="radio" name="q6" id="q6-4" value="4">
+                        <label for="q6-4">4. 非常符合</label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 题目7（反向计分） -->
+            <div class="question-card">
+                <div class="question-number">题目 7/10</div>
+                <div class="question-text">总的来说，我对自己感到不满意。</div>
+                <div class="options">
+                    <div class="option-item">
+                        <input type="radio" name="q7" id="q7-1" value="1">
+                        <label for="q7-1">1. 很不符合</label>
+                    </div>
+                    <div class="option-item">
+                        <input type="radio" name="q7" id="q7-2" value="2">
+                        <label for="q7-2">2. 不符合</label>
+                    </div>
+                    <div class="option-item">
+                        <input type="radio" name="q7" id="q7-3" value="3">
+                        <label for="q7-3">3. 符合</label>
+                    </div>
+                    <div class="option-item">
+                        <input type="radio" name="q7" id="q7-4" value="4">
+                        <label for="q7-4">4. 非常符合</label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 题目8（反向计分） -->
+            <div class="question-card">
+                <div class="question-number">题目 8/10</div>
+                <div class="question-text">我希望能为自己赢得更多尊重。</div>
+                <div class="options">
+                    <div class="option-item">
+                        <input type="radio" name="q8" id="q8-1" value="1">
+                        <label for="q8-1">1. 很不符合</label>
+                    </div>
+                    <div class="option-item">
+                        <input type="radio" name="q8" id="q8-2" value="2">
+                        <label for="q8-2">2. 不符合</label>
+                    </div>
+                    <div class="option-item">
+                        <input type="radio" name="q8" id="q8-3" value="3">
+                        <label for="q8-3">3. 符合</label>
+                    </div>
+                    <div class="option-item">
+                        <input type="radio" name="q8" id="q8-4" value="4">
+                        <label for="q8-4">4. 非常符合</label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 题目9（正向计分） -->
+            <div class="question-card">
+                <div class="question-number">题目 9/10</div>
+                <div class="question-text">我觉得自己是一个成功者。</div>
+                <div class="options">
+                    <div class="option-item">
+                        <input type="radio" name="q9" id="q9-1" value="1">
+                        <label for="q9-1">1. 很不符合</label>
+                    </div>
+                    <div class="option-item">
+                        <input type="radio" name="q9" id="q9-2" value="2">
+                        <label for="q9-2">2. 不符合</label>
+                    </div>
+                    <div class="option-item">
+                        <input type="radio" name="q9" id="q9-3" value="3">
+                        <label for="q9-3">3. 符合</label>
+                    </div>
+                    <div class="option-item">
+                        <input type="radio" name="q9" id="q9-4" value="4">
+                        <label for="q9-4">4. 非常符合</label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 题目10（正向计分） -->
+            <div class="question-card">
+                <div class="question-number">题目 10/10</div>
+                <div class="question-text">我认为自己拥有许多优秀的品质。</div>
+                <div class="options">
+                    <div class="option-item">
+                        <input type="radio" name="q10" id="q10-1" value="1">
+                        <label for="q10-1">1. 很不符合</label>
+                    </div>
+                    <div class="option-item">
+                        <input type="radio" name="q10" id="q10-2" value="2">
+                        <label for="q10-2">2. 不符合</label>
+                    </div>
+                    <div class="option-item">
+                        <input type="radio" name="q10" id="q10-3" value="3">
+                        <label for="q10-3">3. 符合</label>
+                    </div>
+                    <div class="option-item">
+                        <input type="radio" name="q10" id="q10-4" value="4">
+                        <label for="q10-4">4. 非常符合</label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 提交区域 -->
+            <div class="submit-area">
+                <div class="progress-text" id="progressText">已完成 0/10 题</div>
+                <button type="submit" class="submit-btn" id="submitBtn" disabled>提交测试</button>
+            </div>
+        </form>
+    </div>
+
+    <!-- 页脚 -->
+    <footer>
+        <div class="container">
+            <p>© <script>document.write(new Date().getFullYear())</script> 金织网 公益心理平台 | 测试结果仅作参考，不构成专业心理诊断</p>
+        </div>
+    </footer>
+
+    <script>
+        // 1. 移动端菜单交互
+        const mobileMenu = document.querySelector('.mobile-menu');
+        const navUl = document.querySelector('.nav-links ul');
+        mobileMenu.addEventListener('click', () => {
+            navUl.style.display = navUl.style.display === 'flex' ? 'none' : 'flex';
+            if (navUl.style.display === 'flex') {
+                navUl.style.flexDirection = 'column';
+                navUl.style.position = 'absolute';
+                navUl.style.top = '70px';
+                navUl.style.left = '0';
+                navUl.style.right = '0';
+                navUl.style.background = 'white';
+                navUl.style.padding = '20px';
+                navUl.style.boxShadow = '0 4px 8px rgba(0,0,0,0.1)';
+                mobileMenu.innerHTML = '<i class="fas fa-times"></i>';
+            } else {
+                mobileMenu.innerHTML = '<i class="fas fa-bars"></i>';
+            }
+        });
+
+        // 2. 测试题进度监控与提交逻辑
+        const form = document.getElementById('sesTestForm');
+        const submitBtn = document.getElementById('submitBtn');
+        const progressText = document.getElementById('progressText');
+        const allQuestions = ['q1', 'q2', 'q3', 'q4', 'q5', 'q6', 'q7', 'q8', 'q9', 'q10'];
+        
+        // 监控选项变化，更新进度
+        form.addEventListener('change', () => {
+            let completed = 0;
+            allQuestions.forEach(q => {
+                const selected = document.querySelector(`input[name="${q}"]:checked`);
+                if (selected) completed++;
+            });
+            progressText.textContent = `已完成 ${completed}/10 题`;
+            submitBtn.disabled = completed < 10;
+        });
+
+        // 表单提交逻辑：计算总分并跳转到结果页
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            // 收集所有题目的答案
+            const answers = {};
+            allQuestions.forEach(q => {
+                const selected = document.querySelector(`input[name="${q}"]:checked`);
+                answers[q] = parseInt(selected.value);
+            });
+
+            // 处理反向计分题（2/5/7/8题）：1↔4，2↔3
+            const reverseQuestions = ['q2', 'q5', 'q7', 'q8'];
+            reverseQuestions.forEach(q => {
+                answers[q] = 5 - answers[q]; // 1→4, 2→3, 3→2, 4→1
+            });
+
+            // 计算总分
+            let totalScore = 0;
+            for (const q in answers) {
+                totalScore += answers[q];
+            }
+
+            // 跳转到结果页，通过URL参数传递总分（不存储数据）
+            window.location.href = `ses-result.html?score=${totalScore}`;
+        });
+    </script>
+</body>
+</html>

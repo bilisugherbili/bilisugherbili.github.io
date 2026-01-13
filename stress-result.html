@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PSS-14 测评结果 - 金织网</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <style>
+        /* 沿用金织网金色系变量 */
+        :root {
+            --primary-color: #D4AF37;
+            --primary-dark: #B8860B;
+            --primary-light: #F9F2D6;
+            --secondary-color: #8B7355;
+            --text-dark: #2D2926;
+            --text-gray: #5C554E;
+            --text-light: #8A817C;
+            --bg-light: #FFFAF0;
+            --bg-white: #ffffff;
+            --border-gray: #E8E0D0;
+            --success-color: #52c41a;
+            --warning-color: #faad14;
+            --danger-color: #f5222d;
+            --shadow-sm: 0 2px 8px rgba(212, 175, 55, 0.15);
+            --radius-md: 8px;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: "Inter", "PingFang SC", "Microsoft YaHei", sans-serif; }
+        body { background-color: var(--bg-light); color: var(--text-dark); line-height: 1.6; padding: 30px 0; }
+        .container { max-width: 840px; margin: 0 auto; padding: 0 20px; }
+        .result-card { background-color: var(--bg-white); border-radius: var(--radius-md); box-shadow: var(--shadow-sm); padding: 40px; margin-bottom: 30px; text-align: center; border: 1px solid var(--border-gray); }
+        .result-card h2 { color: var(--primary-dark); margin-bottom: 30px; font-size: 24px; }
+        .score-box { display: flex; justify-content: center; gap: 40px; margin-bottom: 30px; flex-wrap: wrap; }
+        .score-item { padding: 20px; border-radius: var(--radius-md); background-color: var(--primary-light); min-width: 180px; }
+        .score-item h3 { font-size: 14px; color: var(--text-gray); margin-bottom: 10px; }
+        .score-item .score { font-size: 32px; font-weight: 700; color: var(--primary-color); }
+        /* 折线图容器 */
+        .chart-box { margin: 30px auto; max-width: 600px; height: 300px; }
+        .level-box { padding: 20px; border-radius: var(--radius-md); margin-bottom: 30px; }
+        .level-box h3 { font-size: 20px; margin-bottom: 10px; }
+        .level-box .desc { color: var(--text-gray); line-height: 1.8; }
+        .level-low { background-color: #f6ffed; border: 1px solid #b7eb8f; } .level-low h3 { color: var(--success-color); }
+        .level-moderate { background-color: #fffbe6; border: 1px solid #ffe58f; } .level-moderate h3 { color: var(--warning-color); }
+        .level-high { background-color: #fff1f0; border: 1px solid #ffccc7; } .level-high h3 { color: #fa8c16; }
+        .level-veryhigh { background-color: #fff2f0; border: 1px solid #ff8080; } .level-veryhigh h3 { color: var(--danger-color); }
+        .suggestion-box { text-align: left; padding: 20px; background-color: var(--primary-light); border-radius: var(--radius-md); margin-bottom: 30px; }
+        .suggestion-box h3 { color: var(--primary-dark); margin-bottom: 15px; font-size: 16px; }
+        .suggestion-box ul { padding-left: 20px; color: var(--text-gray); line-height: 1.8; }
+        .suggestion-box li { margin-bottom: 8px; }
+        /* 操作按钮组 */
+        .action-group { display: flex; justify-content: center; gap: 20px; flex-wrap: wrap; margin-bottom: 30px; }
+        .btn { padding: 10px 25px; border-radius: var(--radius-md); text-decoration: none; font-weight: 600; font-size: 14px; transition: all .3s ease; border: none; cursor: pointer; }
+        .btn-primary { background-color: var(--primary-color); color: white; border: 1px solid var(--primary-dark); }
+        .btn-primary:hover { background-color: var(--primary-dark); }
+        .btn-outline { border: 1px solid var(--primary-color); color: var(--primary-color); background: transparent; }
+        .btn-outline:hover { background-color: var(--primary-light); }
+        /* Toast 提示 */
+        #toast { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); background: var(--primary-dark); color: #fff; padding: 10px 20px; border-radius: var(--radius-md); box-shadow: var(--shadow-sm); opacity: 0; transition: opacity .3s; pointer-events: none; font-size: 14px; }
+        #toast.show { opacity: 1; }
+        /* 打印隐藏 */
+        @media print {
+            .no-print, .action-group { display: none !important; }
+            body { background: #fff; }
+            .result-card { box-shadow: none; border: 1px solid #ddd; }
+        }
+        .disclaimer { font-size: 12px; color: var(--text-gray); text-align: center; line-height: 1.8; padding: 20px; background-color: var(--bg-white); border-radius: var(--radius-md); box-shadow: var(--shadow-sm); border: 1px solid var(--border-gray); }
+        @media (max-width: 768px) { .result-card { padding: 25px; } .score-box { gap: 20px; } .score-item { min-width: 140px; padding: 15px; } .score-item .score { font-size: 24px; } }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="result-card">
+            <h2>压力知觉量表（PSS-14）测评结果</h2>
+
+            <div class="score-box">
+                <div class="score-item">
+                    <h3>原始分</h3>
+                    <div class="score" id="rawScore">--</div>
+                </div>
+                <div class="score-item">
+                    <h3>标准分</h3>
+                    <div class="score" id="standardScore">--</div>
+                </div>
+            </div>
+
+            <!-- 折线图：雷达图 -->
+            <div class="chart-box no-print">
+                <canvas id="radarChart"></canvas>
+            </div>
+
+            <div class="level-box" id="levelBox">
+                <h3 id="levelTitle">正在分析你的测评结果...</h3>
+                <p class="desc" id="levelDesc">请稍候...</p>
+            </div>
+
+            <div class="suggestion-box" id="suggestionBox">
+                <h3>温馨建议</h3>
+                <ul id="suggestionList">
+                    <li>加载中...</li>
+                </ul>
+            </div>
+
+            <!-- 操作按钮 -->
+            <div class="action-group no-print">
+                <button class="btn btn-outline" onclick="window.print()">
+                    <i class="fa fa-print"></i> 打印报告
+                </button>
+                <button class="btn btn-primary" onclick="copyReport()">
+                    <i class="fa fa-copy"></i> 一键复制
+                </button>
+                <a href="pss.html" class="btn btn-outline">重新测评</a>
+                <a href="index.html" class="btn btn-primary">返回首页</a>
+            </div>
+        </div>
+
+        <div class="disclaimer">
+            <p>⚠️ 免责声明：本测评结果仅基于你填写的信息进行计算，仅作个人心理状态参考，不能替代专业的心理诊断。</p>
+            <p>如感到持续压力过大、情绪崩溃或出现自伤念头，请立即联系专业心理咨询师或拨打心理援助热线。</p>
+        </div>
+    </div>
+
+    <!-- Toast -->
+    <div id="toast"></div>
+
+    <script>
+        /* ========== 基础数据 ========== */
+        const urlParams = new URLSearchParams(window.location.search);
+        const rawScore = urlParams.get('raw');
+        const standardScore = parseInt(urlParams.get('standard'));
+
+        document.getElementById('rawScore').textContent = rawScore || '无效数据';
+        document.getElementById('standardScore').textContent = standardScore || '无效数据';
+
+        /* ========== 分段结论 ========== */
+        let levelClass, levelTitle, levelDesc, suggestions;
+        if (!standardScore || standardScore < 0 || standardScore > 56) {
+            levelTitle = '无效的测评数据';
+            levelDesc = '无法识别你的测评分数，请重新完成测评。';
+            suggestions = ['返回测评页面，确保完整回答所有14道题目；', '作答时请根据最近一个月的真实感受选择；', '如多次尝试仍异常，请检查网络或联系平台管理员。'];
+        } else if (standardScore <= 28) {
+            levelClass = 'level-low';
+            levelTitle = '低压力状态';
+            levelDesc = '你目前主观感受到的压力较低，整体处于较为放松、可控的心理状态。';
+            suggestions = ['继续保持良好的生活节奏与作息规律；', '可适当挑战新目标，提升自我效能感；', '维持现有社交与支持系统，持续保持积极心态。'];
+        } else if (standardScore <= 42) {
+            levelClass = 'level-moderate';
+            levelTitle = '中等压力状态';
+            levelDesc = '你近期能知觉到中等程度的压力，属常见范围，可通过科学调节有效缓解。';
+            suggestions = ['每天安排10-15分钟放松训练（深呼吸、正念冥想、渐进性肌肉放松）；', '保证7-8小时睡眠，均衡饮食，每周3次、每次30分钟中等强度运动；', '列出压力源并分解为可执行的小任务，采用「番茄工作法」管理时间；', '与亲友保持沟通，必要时寻求心理咨询师的短期支持。'];
+        } else {
+            levelClass = 'level-high';
+            levelTitle = '高压力状态';
+            levelDesc = '你主观感受到的压力较高，已对日常生活/工作产生一定影响，需尽快采取干预措施。';
+            suggestions = ['预约专业心理咨询师，进行1对1评估与认知-行为干预；', '主动告知家人或信任的朋友，获得情感支持与陪伴，避免独自承受；', '短期内减少额外任务，学会说「不」，为自己留出恢复精力的时间；', '若出现持续失眠、情绪崩溃或自伤念头，请立即前往医院精神科/心理科就诊。'];
+        }
+
+        const levelBox = document.getElementById('levelBox');
+        levelBox.className = `level-box ${levelClass}`;
+        document.getElementById('levelTitle').textContent = levelTitle;
+        document.getElementById('levelDesc').textContent = levelDesc;
+        const suggestionList = document.getElementById('suggestionList');
+        suggestionList.innerHTML = '';
+        suggestions.forEach(item => {
+            const li = document.createElement('li');
+            li.textContent = item;
+            suggestionList.appendChild(li);
+        });
+
+        /* ========== 雷达图 ========== */
+        // 简易四维度示意（可按题目拆分更细）
+        const positive = [1, 2, 3, 6, 9, 10, 13];   // 正向题号
+        const negative = [4, 5, 7, 8, 11, 12, 14]; // 反向题号
+        // 模拟维度分（若无分题数据，则用总分均分示意）
+        const avgPos = Math.round(standardScore * 0.5);
+        const avgNeg = Math.round(standardScore * 0.5);
+        const ctx = document.getElementById('radarChart');
+        new Chart(ctx, {
+            type: 'radar',
+            data: {
+                labels: ['不可控感', '紧张感', '应对资源', '时间管理'],
+                datasets: [{
+                    label: '维度得分',
+                    data: [avgPos, avgPos, 56 - avgNeg, 56 - avgNeg],
+                    backgroundColor: 'rgba(212, 175, 55, 0.2)',
+                    borderColor: 'rgba(212, 175, 55, 1)',
+                    pointBackgroundColor: 'rgba(212, 175, 55, 1)',
+                    pointBorderColor: '#fff',
+                    pointHoverBackgroundColor: '#fff',
+                    pointHoverBorderColor: 'rgba(212, 175, 55, 1)'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    r: {
+                        beginAtZero: true,
+                        max: 56,
+                        ticks: { stepSize: 14 },
+                        pointLabels: { font: { size: 14 } }
+                    }
+                },
+                plugins: {
+                    legend: { display: false }
+                }
+            }
+        });
+
+        /* ========== 一键复制 ========== */
+        function copyReport() {
+            const text = `
+压力知觉量表（PSS-14）测评报告
+================================
+原始分：${rawScore}
+标准分：${standardScore}
+压力等级：${levelTitle}
+--------------------------------
+简要描述：
+${levelDesc}
+--------------------------------
+温馨建议：
+${suggestions.map(s => '• ' + s).join('\n')}
+================================
+测评时间：${new Date().toLocaleString('zh-CN')}
+免责声明：本结果仅供参考，不能替代专业诊断。
+            `.trim();
+            navigator.clipboard.writeText(text).then(() => {
+                showToast('报告已复制到剪贴板');
+            }).catch(err => {
+                showToast('复制失败，请手动选择复制');
+            });
+        }
+
+        function showToast(msg) {
+            const toast = document.getElementById('toast');
+            toast.textContent = msg;
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 2000);
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,779 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>大五人格量表（NEO-PI-R）测评结果 - 金织网</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <style>
+        /* 沿用金织网金色系变量，增加大五人格颜色 */
+        :root {
+            --primary-color: #D4AF37;
+            --primary-dark: #B8860B;
+            --primary-light: #F9F2D6;
+            --secondary-color: #8B7355;
+            --text-dark: #2D2926;
+            --text-gray: #5C554E;
+            --text-light: #8A817C;
+            --bg-light: #FFFAF0;
+            --bg-white: #ffffff;
+            --border-gray: #E8E0D0;
+            --success-color: #52c41a;
+            --warning-color: #faad14;
+            --danger-color: #f5222d;
+            --shadow-sm: 0 2px 8px rgba(212, 175, 55, 0.15);
+            --radius-md: 8px;
+            
+            /* 大五人格维度颜色 */
+            --neuroticism-color: #E63946;
+            --extraversion-color: #457B9D;
+            --openness-color: #2A9D8F;
+            --agreeableness-color: #E9C46A;
+            --conscientiousness-color: #A8DADC;
+        }
+        
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: "Inter", "PingFang SC", "Microsoft YaHei", sans-serif; }
+        body { background-color: var(--bg-light); color: var(--text-dark); line-height: 1.6; padding: 30px 0; }
+        .container { max-width: 1000px; margin: 0 auto; padding: 0 20px; }
+        
+        /* 结果卡片 */
+        .result-card { background-color: var(--bg-white); border-radius: var(--radius-md); box-shadow: var(--shadow-sm); padding: 40px; margin-bottom: 30px; border: 1px solid var(--border-gray); }
+        .result-card h2 { color: var(--primary-dark); margin-bottom: 30px; font-size: 24px; text-align: center; }
+        
+        /* 维度指示器 */
+        .dimension-indicator {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 30px;
+            padding: 15px;
+            background-color: var(--bg-white);
+            border-radius: var(--radius-md);
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border-gray);
+        }
+        
+        .dimension-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+        }
+        
+        .dimension-marker {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+        
+        .dimension-marker.neuroticism { background-color: var(--neuroticism-color); }
+        .dimension-marker.extraversion { background-color: var(--extraversion-color); }
+        .dimension-marker.openness { background-color: var(--openness-color); }
+        .dimension-marker.agreeableness { background-color: var(--agreeableness-color); }
+        .dimension-marker.conscientiousness { background-color: var(--conscientiousness-color); }
+        
+        /* 分数显示 */
+        .score-box { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 20px; margin-bottom: 30px; }
+        .score-item { 
+            flex: 1; 
+            min-width: 150px; 
+            padding: 20px; 
+            border-radius: var(--radius-md); 
+            background-color: var(--primary-light); 
+            text-align: center;
+            border: 1px solid var(--border-gray);
+        }
+        
+        .score-item h3 { 
+            font-size: 14px; 
+            color: var(--text-gray); 
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+        
+        .score-item .score { 
+            font-size: 32px; 
+            font-weight: 700; 
+            color: var(--primary-color); 
+            margin-bottom: 5px;
+        }
+        
+        .score-item .percent { 
+            font-size: 14px; 
+            color: var(--text-gray);
+        }
+        
+        /* 雷达图容器 */
+        .chart-box { margin: 30px auto; max-width: 700px; height: 350px; }
+        
+        /* 维度解释框 */
+        .dimension-explain { 
+            margin-bottom: 30px; 
+            padding: 20px; 
+            border-radius: var(--radius-md); 
+            border-left: 5px solid;
+        }
+        
+        .dimension-explain h3 { 
+            font-size: 18px; 
+            margin-bottom: 10px; 
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .dimension-explain .desc { 
+            color: var(--text-gray); 
+            line-height: 1.8; 
+            margin-bottom: 15px;
+        }
+        
+        .dimension-explain .suggestion { 
+            color: var(--text-dark);
+            font-size: 14px;
+            line-height: 1.7;
+            padding-left: 10px;
+            border-left: 2px solid var(--border-gray);
+        }
+        
+        /* 大五人格具体维度样式 */
+        .dimension-neuroticism { border-left-color: var(--neuroticism-color); background-color: rgba(230, 57, 70, 0.05); }
+        .dimension-extraversion { border-left-color: var(--extraversion-color); background-color: rgba(69, 123, 157, 0.05); }
+        .dimension-openness { border-left-color: var(--openness-color); background-color: rgba(42, 157, 143, 0.05); }
+        .dimension-agreeableness { border-left-color: var(--agreeableness-color); background-color: rgba(233, 196, 106, 0.1); }
+        .dimension-conscientiousness { border-left-color: var(--conscientiousness-color); background-color: rgba(168, 218, 220, 0.1); }
+        
+        /* 总体描述框 */
+        .overall-box { 
+            padding: 25px; 
+            border-radius: var(--radius-md); 
+            margin-bottom: 30px; 
+            background-color: var(--primary-light);
+            border: 1px solid var(--border-gray);
+        }
+        
+        .overall-box h3 { 
+            color: var(--primary-dark); 
+            margin-bottom: 15px; 
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .overall-box p { 
+            color: var(--text-dark); 
+            line-height: 1.8; 
+        }
+        
+        /* 操作按钮组 */
+        .action-group { 
+            display: flex; 
+            justify-content: center; 
+            gap: 20px; 
+            flex-wrap: wrap; 
+            margin-bottom: 30px; 
+        }
+        
+        .btn { 
+            padding: 12px 25px; 
+            border-radius: var(--radius-md); 
+            text-decoration: none; 
+            font-weight: 600; 
+            font-size: 14px; 
+            transition: all .3s ease; 
+            border: none; 
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            min-width: 140px;
+        }
+        
+        .btn-primary { 
+            background-color: var(--primary-color); 
+            color: white; 
+            border: 1px solid var(--primary-dark); 
+        }
+        
+        .btn-primary:hover { 
+            background-color: var(--primary-dark); 
+        }
+        
+        .btn-outline { 
+            border: 1px solid var(--primary-color); 
+            color: var(--primary-color); 
+            background: transparent; 
+        }
+        
+        .btn-outline:hover { 
+            background-color: var(--primary-light); 
+        }
+        
+        /* Toast 提示 */
+        #toast { 
+            position: fixed; 
+            bottom: 30px; 
+            left: 50%; 
+            transform: translateX(-50%); 
+            background: var(--primary-dark); 
+            color: #fff; 
+            padding: 12px 24px; 
+            border-radius: var(--radius-md); 
+            box-shadow: var(--shadow-sm); 
+            opacity: 0; 
+            transition: opacity .3s; 
+            pointer-events: none; 
+            font-size: 14px;
+            z-index: 1000;
+        }
+        
+        #toast.show { 
+            opacity: 1; 
+        }
+        
+        /* 打印隐藏 */
+        @media print {
+            .no-print, .action-group { display: none !important; }
+            body { background: #fff; }
+            .result-card { box-shadow: none; border: 1px solid #ddd; }
+        }
+        
+        .disclaimer { 
+            font-size: 12px; 
+            color: var(--text-gray); 
+            text-align: center; 
+            line-height: 1.8; 
+            padding: 20px; 
+            background-color: var(--bg-white); 
+            border-radius: var(--radius-md); 
+            box-shadow: var(--shadow-sm); 
+            border: 1px solid var(--border-gray); 
+        }
+        
+        /* 响应式 */
+        @media (max-width: 768px) { 
+            .result-card { padding: 25px; } 
+            .score-box { flex-direction: column; }
+            .score-item { min-width: 100%; }
+            .dimension-indicator { flex-direction: column; align-items: flex-start; gap: 12px; }
+            .chart-box { height: 280px; }
+            .action-group { flex-direction: column; align-items: center; }
+            .btn { width: 100%; max-width: 300px; }
+        }
+        
+        /* 分数解释标签 */
+        .score-label {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-top: 8px;
+        }
+        
+        .score-low { background-color: rgba(82, 196, 26, 0.1); color: #237804; }
+        .score-medium { background-color: rgba(250, 173, 20, 0.1); color: #ad6800; }
+        .score-high { background-color: rgba(245, 34, 45, 0.1); color: #a8071a; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="result-card">
+            <h2>大五人格量表（NEO-PI-R）测评结果</h2>
+            
+            <!-- 维度指示器 -->
+            <div class="dimension-indicator">
+                <div class="dimension-item">
+                    <div class="dimension-marker neuroticism"></div>
+                    <span>神经质 (N)</span>
+                </div>
+                <div class="dimension-item">
+                    <div class="dimension-marker extraversion"></div>
+                    <span>外向性 (E)</span>
+                </div>
+                <div class="dimension-item">
+                    <div class="dimension-marker openness"></div>
+                    <span>开放性 (O)</span>
+                </div>
+                <div class="dimension-item">
+                    <div class="dimension-marker agreeableness"></div>
+                    <span>宜人性 (A)</span>
+                </div>
+                <div class="dimension-item">
+                    <div class="dimension-marker conscientiousness"></div>
+                    <span>尽责性 (C)</span>
+                </div>
+            </div>
+
+            <!-- 分数显示 -->
+            <div class="score-box">
+                <div class="score-item" id="scoreNeuroticism">
+                    <h3>神经质 (N)</h3>
+                    <div class="score">--</div>
+                    <div class="percent">百分比: --%</div>
+                    <div class="score-label" id="labelNeuroticism"></div>
+                </div>
+                
+                <div class="score-item" id="scoreExtraversion">
+                    <h3>外向性 (E)</h3>
+                    <div class="score">--</div>
+                    <div class="percent">百分比: --%</div>
+                    <div class="score-label" id="labelExtraversion"></div>
+                </div>
+                
+                <div class="score-item" id="scoreOpenness">
+                    <h3>开放性 (O)</h3>
+                    <div class="score">--</div>
+                    <div class="percent">百分比: --%</div>
+                    <div class="score-label" id="labelOpenness"></div>
+                </div>
+                
+                <div class="score-item" id="scoreAgreeableness">
+                    <h3>宜人性 (A)</h3>
+                    <div class="score">--</div>
+                    <div class="percent">百分比: --%</div>
+                    <div class="score-label" id="labelAgreeableness"></div>
+                </div>
+                
+                <div class="score-item" id="scoreConscientiousness">
+                    <h3>尽责性 (C)</h3>
+                    <div class="score">--</div>
+                    <div class="percent">百分比: --%</div>
+                    <div class="score-label" id="labelConscientiousness"></div>
+                </div>
+            </div>
+
+            <!-- 雷达图 -->
+            <div class="chart-box no-print">
+                <canvas id="radarChart"></canvas>
+            </div>
+
+            <!-- 总体描述 -->
+            <div class="overall-box">
+                <h3><i class="fas fa-user-circle"></i> 总体人格描述</h3>
+                <p id="overallDesc">正在分析您的人格特征...</p>
+            </div>
+
+            <!-- 各维度详细解释 -->
+            <div id="dimensionExplanations">
+                <h3 style="color: var(--primary-dark); margin-bottom: 20px; font-size: 20px;">各维度详细分析</h3>
+                
+                <div class="dimension-explain dimension-neuroticism" id="explainNeuroticism">
+                    <h3><span class="dimension-marker neuroticism"></span> 神经质 (N) - 情绪稳定性</h3>
+                    <p class="desc">分析中...</p>
+                    <p class="suggestion" id="suggestionNeuroticism"></p>
+                </div>
+                
+                <div class="dimension-explain dimension-extraversion" id="explainExtraversion">
+                    <h3><span class="dimension-marker extraversion"></span> 外向性 (E) - 社交倾向</h3>
+                    <p class="desc">分析中...</p>
+                    <p class="suggestion" id="suggestionExtraversion"></p>
+                </div>
+                
+                <div class="dimension-explain dimension-openness" id="explainOpenness">
+                    <h3><span class="dimension-marker openness"></span> 开放性 (O) - 想象力与好奇心</h3>
+                    <p class="desc">分析中...</p>
+                    <p class="suggestion" id="suggestionOpenness"></p>
+                </div>
+                
+                <div class="dimension-explain dimension-agreeableness" id="explainAgreeableness">
+                    <h3><span class="dimension-marker agreeableness"></span> 宜人性 (A) - 同情心与合作性</h3>
+                    <p class="desc">分析中...</p>
+                    <p class="suggestion" id="suggestionAgreeableness"></p>
+                </div>
+                
+                <div class="dimension-explain dimension-conscientiousness" id="explainConscientiousness">
+                    <h3><span class="dimension-marker conscientiousness"></span> 尽责性 (C) - 组织性与责任感</h3>
+                    <p class="desc">分析中...</p>
+                    <p class="suggestion" id="suggestionConscientiousness"></p>
+                </div>
+            </div>
+
+            <!-- 操作按钮 -->
+            <div class="action-group no-print">
+                <button class="btn btn-outline" onclick="window.print()">
+                    <i class="fa fa-print"></i> 打印报告
+                </button>
+                <button class="btn btn-primary" onclick="copyReport()">
+                    <i class="fa fa-copy"></i> 一键复制
+                </button>
+                <a href="neo-test.html" class="btn btn-outline">重新测评</a>
+                <a href="index.html" class="btn btn-primary">返回首页</a>
+            </div>
+        </div>
+
+        <div class="disclaimer">
+            <p>⚠️ 免责声明：大五人格量表（NEO-PI-R）是心理学中常用的人格测评工具，本测评结果基于您填写的60个题目计算得出，仅作个人参考。</p>
+            <p>人格特征具有相对稳定性，但也会随时间和环境变化。本测评不能替代专业的心理评估或诊断。</p>
+        </div>
+    </div>
+
+    <!-- Toast提示 -->
+    <div id="toast"></div>
+
+    <script>
+        /* ========== 基础数据 ========== */
+        const urlParams = new URLSearchParams(window.location.search);
+        
+        // 获取五个维度的原始分和百分比
+        const scores = {
+            N: parseInt(urlParams.get('N')) || 0,
+            E: parseInt(urlParams.get('E')) || 0,
+            O: parseInt(urlParams.get('O')) || 0,
+            A: parseInt(urlParams.get('A')) || 0,
+            C: parseInt(urlParams.get('C')) || 0
+        };
+        
+        const percents = {
+            N: parseInt(urlParams.get('N_percent')) || 0,
+            E: parseInt(urlParams.get('E_percent')) || 0,
+            O: parseInt(urlParams.get('O_percent')) || 0,
+            A: parseInt(urlParams.get('A_percent')) || 0,
+            C: parseInt(urlParams.get('C_percent')) || 0
+        };
+        
+        // 检查数据是否有效
+        const isValidData = scores.N > 0 && scores.E > 0 && scores.O > 0 && scores.A > 0 && scores.C > 0;
+        
+        /* ========== 显示分数 ========== */
+        function displayScores() {
+            const dimensions = ['Neuroticism', 'Extraversion', 'Openness', 'Agreeableness', 'Conscientiousness'];
+            const codes = ['N', 'E', 'O', 'A', 'C'];
+            
+            dimensions.forEach((dim, index) => {
+                const code = codes[index];
+                const scoreElement = document.getElementById(`score${dim}`);
+                const scoreLabel = document.getElementById(`label${dim}`);
+                
+                if (scoreElement) {
+                    scoreElement.querySelector('.score').textContent = scores[code];
+                    scoreElement.querySelector('.percent').textContent = `百分比: ${percents[code]}%`;
+                    
+                    // 根据百分比添加标签
+                    let labelText = '';
+                    let labelClass = '';
+                    
+                    if (percents[code] < 34) {
+                        labelText = '低';
+                        labelClass = 'score-low';
+                    } else if (percents[code] < 67) {
+                        labelText = '中等';
+                        labelClass = 'score-medium';
+                    } else {
+                        labelText = '高';
+                        labelClass = 'score-high';
+                    }
+                    
+                    scoreLabel.textContent = labelText;
+                    scoreLabel.className = `score-label ${labelClass}`;
+                }
+            });
+        }
+        
+        /* ========== 生成维度解释 ========== */
+        function generateExplanations() {
+            // 神经质 (N) 解释
+            let nDesc = '';
+            let nSuggestion = '';
+            
+            if (percents.N < 34) {
+                nDesc = '您的神经质得分较低，表明您情绪稳定，能够较好地应对压力和挫折。您通常能够保持冷静，不易感到焦虑或沮丧。';
+                nSuggestion = '建议：继续保持良好的情绪调节能力，可以尝试一些放松技巧来进一步提升情绪管理能力。';
+            } else if (percents.N < 67) {
+                nDesc = '您的神经质得分处于中等水平，表明您在某些情况下可能会感到压力或情绪波动，但通常能够应对。';
+                nSuggestion = '建议：学习一些压力管理技巧，如冥想、深呼吸或正念练习，帮助您更好地处理情绪波动。';
+            } else {
+                nDesc = '您的神经质得分较高，表明您可能对压力较为敏感，容易感到焦虑、紧张或情绪低落。';
+                nSuggestion = '建议：考虑学习情绪调节策略，如认知重构、放松训练，必要时寻求专业心理支持。';
+            }
+            
+            document.getElementById('explainNeuroticism').querySelector('.desc').textContent = nDesc;
+            document.getElementById('suggestionNeuroticism').textContent = nSuggestion;
+            
+            // 外向性 (E) 解释
+            let eDesc = '';
+            let eSuggestion = '';
+            
+            if (percents.E < 34) {
+                eDesc = '您的外向性得分较低，表明您可能比较内向，喜欢独处或小团体活动。您从内部世界获得能量，可能需要更多时间思考。';
+                eSuggestion = '建议：尊重自己的社交节奏，但也可以尝试偶尔参与社交活动来拓展人际网络。';
+            } else if (percents.E < 67) {
+                eDesc = '您的外向性得分处于中等水平，表明您在社交和独处之间能够取得平衡。您既享受社交互动，也需要个人时间。';
+                eSuggestion = '建议：根据情境灵活调整社交行为，既保持人际联系，也给自己足够的独处时间。';
+            } else {
+                eDesc = '您的外向性得分较高，表明您性格外向，喜欢社交互动，从与他人相处中获得能量。您可能充满活力，乐于表达。';
+                eSuggestion = '建议：利用您的社交能力建立广泛的人际网络，同时注意给自己留出休息时间，避免社交疲劳。';
+            }
+            
+            document.getElementById('explainExtraversion').querySelector('.desc').textContent = eDesc;
+            document.getElementById('suggestionExtraversion').textContent = eSuggestion;
+            
+            // 开放性 (O) 解释
+            let oDesc = '';
+            let oSuggestion = '';
+            
+            if (percents.O < 34) {
+                oDesc = '您的开放性得分较低，表明您偏好传统、常规的事物，可能比较务实，注重实际经验而非抽象概念。';
+                oSuggestion = '建议：保持务实的态度，但也可以偶尔尝试新体验，可能会给您带来新的视角。';
+            } else if (percents.O < 67) {
+                oDesc = '您的开放性得分处于中等水平，表明您对新事物持开放态度，但同时也注重实际和传统价值。';
+                oSuggestion = '建议：保持平衡，既接受新思想，也保持对传统价值的尊重。';
+            } else {
+                oDesc = '您的开放性得分较高，表明您富有想象力、好奇心强，喜欢探索新思想、新体验和抽象概念。';
+                oSuggestion = '建议：利用您的创造力从事创新工作，但也要注意将想法付诸实践。';
+            }
+            
+            document.getElementById('explainOpenness').querySelector('.desc').textContent = oDesc;
+            document.getElementById('suggestionOpenness').textContent = oSuggestion;
+            
+            // 宜人性 (A) 解释
+            let aDesc = '';
+            let aSuggestion = '';
+            
+            if (percents.A < 34) {
+                aDesc = '您的宜人性得分较低，表明您可能比较独立、理性，有时可能被视为竞争性较强或怀疑他人动机。';
+                aSuggestion = '建议：在维护自己利益的同时，也可以考虑他人的感受，适度合作可能带来更好的结果。';
+            } else if (percents.A < 67) {
+                aDesc = '您的宜人性得分处于中等水平，表明您通常合作、友善，但也能在必要时坚持自己的立场。';
+                nSuggestion = '建议：保持平衡，既考虑他人需求，也维护自己的利益和原则。';
+            } else {
+                aDesc = '您的宜人性得分较高，表明您富有同情心、合作性强，通常信任他人，乐于助人。';
+                aSuggestion = '建议：您的合作精神是宝贵的团队资产，但也要注意设定界限，避免被他人利用。';
+            }
+            
+            document.getElementById('explainAgreeableness').querySelector('.desc').textContent = aDesc;
+            document.getElementById('suggestionAgreeableness').textContent = aSuggestion;
+            
+            // 尽责性 (C) 解释
+            let cDesc = '';
+            let cSuggestion = '';
+            
+            if (percents.C < 34) {
+                cDesc = '您的尽责性得分较低，表明您可能比较随性、灵活，不喜欢过多的计划和约束。';
+                cSuggestion = '建议：对于需要高度组织性的任务，可以尝试制定简单计划来提高效率。';
+            } else if (percents.C < 67) {
+                cDesc = '您的尽责性得分处于中等水平，表明您能够根据情况在计划性和灵活性之间取得平衡。';
+                cSuggestion = '建议：根据任务性质调整组织程度，重要事项多加规划，日常事务保持灵活。';
+            } else {
+                cDesc = '您的尽责性得分较高，表明您组织性强、可靠、注重细节，能够坚持完成任务。';
+                cSuggestion = '建议：您的可靠性和组织能力是宝贵的职业资产，但也要注意避免过度追求完美。';
+            }
+            
+            document.getElementById('explainConscientiousness').querySelector('.desc').textContent = cDesc;
+            document.getElementById('suggestionConscientiousness').textContent = cSuggestion;
+        }
+        
+        /* ========== 生成总体描述 ========== */
+        function generateOverallDescription() {
+            if (!isValidData) {
+                document.getElementById('overallDesc').textContent = '数据无效，请重新进行测评。';
+                return;
+            }
+            
+            // 找出最高分的维度
+            const maxPercent = Math.max(...Object.values(percents));
+            const maxDimension = Object.keys(percents).find(key => percents[key] === maxPercent);
+            
+            // 找出最低分的维度
+            const minPercent = Math.min(...Object.values(percents));
+            const minDimension = Object.keys(percents).find(key => percents[key] === minPercent);
+            
+            const dimensionNames = {
+                'N': '神经质（情绪稳定性）',
+                'E': '外向性（社交倾向）',
+                'O': '开放性（想象力与好奇心）',
+                'A': '宜人性（同情心与合作性）',
+                'C': '尽责性（组织性与责任感）'
+            };
+            
+            let overallDesc = `根据测评结果，您的${dimensionNames[maxDimension]}特征最为明显（${maxPercent}%），`;
+            overallDesc += `而${dimensionNames[minDimension]}特征相对较弱（${minPercent}%）。`;
+            
+            // 添加基于组合的描述
+            if (percents.E > 66 && percents.A > 66) {
+                overallDesc += ' 您表现出较强的社交能力和合作精神，可能擅长团队协作和人际沟通。';
+            } else if (percents.C > 66 && percents.N < 34) {
+                overallDesc += ' 您表现出高度的责任感和情绪稳定性，可能在需要组织和可靠性的环境中表现出色。';
+            } else if (percents.O > 66 && percents.E > 66) {
+                overallDesc += ' 您结合了开放性和外向性，可能富有创造力且乐于分享新想法。';
+            }
+            
+            document.getElementById('overallDesc').textContent = overallDesc;
+        }
+        
+        /* ========== 雷达图 ========== */
+        function renderRadarChart() {
+            const ctx = document.getElementById('radarChart');
+            
+            // 数据无效时显示空图表
+            if (!isValidData) {
+                new Chart(ctx, {
+                    type: 'radar',
+                    data: {
+                        labels: ['神经质', '外向性', '开放性', '宜人性', '尽责性'],
+                        datasets: [{
+                            label: '维度得分',
+                            data: [0, 0, 0, 0, 0],
+                            backgroundColor: 'rgba(212, 175, 55, 0.2)',
+                            borderColor: 'rgba(212, 175, 55, 1)',
+                            pointBackgroundColor: 'rgba(212, 175, 55, 1)',
+                            pointBorderColor: '#fff',
+                            pointHoverBackgroundColor: '#fff',
+                            pointHoverBorderColor: 'rgba(212, 175, 55, 1)'
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            r: {
+                                beginAtZero: true,
+                                max: 100,
+                                ticks: { stepSize: 20 },
+                                pointLabels: { font: { size: 14 } }
+                            }
+                        },
+                        plugins: {
+                            legend: { display: false }
+                        }
+                    }
+                });
+                return;
+            }
+            
+            new Chart(ctx, {
+                type: 'radar',
+                data: {
+                    labels: ['神经质', '外向性', '开放性', '宜人性', '尽责性'],
+                    datasets: [{
+                        label: '维度得分',
+                        data: [percents.N, percents.E, percents.O, percents.A, percents.C],
+                        backgroundColor: 'rgba(212, 175, 55, 0.2)',
+                        borderColor: 'rgba(212, 175, 55, 1)',
+                        pointBackgroundColor: 'rgba(212, 175, 55, 1)',
+                        pointBorderColor: '#fff',
+                        pointHoverBackgroundColor: '#fff',
+                        pointHoverBorderColor: 'rgba(212, 175, 55, 1)',
+                        pointRadius: 6
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        r: {
+                            beginAtZero: true,
+                            max: 100,
+                            ticks: { 
+                                stepSize: 20,
+                                callback: function(value) {
+                                    return value + '%';
+                                }
+                            },
+                            pointLabels: { 
+                                font: { 
+                                    size: 14,
+                                    weight: '600'
+                                },
+                                color: function(context) {
+                                    const colors = [
+                                        'rgba(230, 57, 70, 0.9)',
+                                        'rgba(69, 123, 157, 0.9)',
+                                        'rgba(42, 157, 143, 0.9)',
+                                        'rgba(233, 196, 106, 0.9)',
+                                        'rgba(168, 218, 220, 0.9)'
+                                    ];
+                                    return colors[context.index];
+                                }
+                            },
+                            angleLines: {
+                                color: 'rgba(0, 0, 0, 0.1)'
+                            },
+                            grid: {
+                                color: 'rgba(0, 0, 0, 0.05)'
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    const dimensionNames = ['神经质', '外向性', '开放性', '宜人性', '尽责性'];
+                                    const dimensionCodes = ['N', 'E', 'O', 'A', 'C'];
+                                    const index = context.dataIndex;
+                                    return `${dimensionNames[index]}: ${context.raw}% (原始分: ${scores[dimensionCodes[index]]})`;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+        
+        /* ========== 一键复制 ========== */
+        function copyReport() {
+            if (!isValidData) {
+                showToast('无法复制，数据无效');
+                return;
+            }
+            
+            const dimensionNames = {
+                'N': '神经质',
+                'E': '外向性', 
+                'O': '开放性',
+                'A': '宜人性',
+                'C': '尽责性'
+            };
+            
+            let text = `大五人格量表（NEO-PI-R）测评报告
+================================
+测评结果：
+`;
+            
+            // 添加各维度分数
+            for (const [code, name] of Object.entries(dimensionNames)) {
+                text += `${name} (${code}): ${scores[code]}分 (${percents[code]}%)\n`;
+            }
+            
+            text += `
+================================
+测评时间：${new Date().toLocaleString('zh-CN')}
+免责声明：本结果仅供参考，不能替代专业心理评估。
+            `.trim();
+            
+            navigator.clipboard.writeText(text).then(() => {
+                showToast('报告已复制到剪贴板');
+            }).catch(err => {
+                showToast('复制失败，请手动选择复制');
+                console.error('复制失败:', err);
+            });
+        }
+        
+        /* ========== Toast提示 ========== */
+        function showToast(msg) {
+            const toast = document.getElementById('toast');
+            toast.textContent = msg;
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 2000);
+        }
+        
+        /* ========== 初始化 ========== */
+        document.addEventListener('DOMContentLoaded', function() {
+            if (!isValidData) {
+                showToast('测评数据无效，请重新测评');
+            }
+            
+            displayScores();
+            generateExplanations();
+            generateOverallDescription();
+            renderRadarChart();
+        });
+    </script>
+</body>
+</html>
